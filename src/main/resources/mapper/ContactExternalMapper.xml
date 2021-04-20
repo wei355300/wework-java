@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.wework.contact.external.mapper.ContactExternalMapper">
+
+    <resultMap type="com.qc.wework.contact.external.dto.ContactExternal" id="ContactExternalMap">
+        <id property="id" column="id" />
+        <result property="externalUserId" column="external_userid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="INTEGER"/>
+        <result property="gender" column="gender" jdbcType="INTEGER"/>
+        <result property="position" column="position" jdbcType="VARCHAR"/>
+        <result property="corpName" column="corp_name" jdbcType="VARCHAR"/>
+        <result property="corpFullName" column="corp_full_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="insertOrUpdateContactExternal">
+        insert into contact_external(external_userid, name, avatar, type, gender, position, corp_name, corp_full_name)
+        values
+        <foreach collection="list" item="ce" separator=",">
+            (#{ce.externalUserId}, #{ce.name}, #{ce.avatar}, #{ce.type}, #{ce.gender}, #{ce.position}, #{ce.corpName}, #{ce.corpFullName})
+        </foreach>
+        on duplicate key update name=values(name), avatar=values(avatar), type=values(type), gender=values(gender), position=values(position), corp_name=values(corp_name), corp_full_name=values(corp_full_name)
+    </insert>
+
+
+</mapper>

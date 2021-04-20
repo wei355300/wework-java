@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.wework.employee.mapper.EmployeeMapper">
+
+    <resultMap type="com.qc.wework.employee.dto.Employee" id="EmployeeMap">
+        <id property="id" column="id" />
+        <result property="userId" column="userid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="thumbAvatar" column="thumb_avatar" jdbcType="VARCHAR"/>
+        <result property="position" column="position" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="department" column="department" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap type="com.qc.wework.employee.dto.EmployeeDetail" id="EmployeeDetailMap" extends="EmployeeMap">
+
+    </resultMap>
+
+    <insert id="insertOrUpdateCpUserDetail">
+        insert into employee(userid, name, mobile, thumb_avatar, avatar, position, email, department)
+        values
+        <foreach collection="list" item="employee" separator=",">
+            (#{employee.userId}, #{employee.name}, #{employee.mobile}, #{employee.thumbAvatar}, #{employee.avatar}, #{employee.position}, #{employee.email}, #{employee.mainDepartment})
+        </foreach>
+        on duplicate key update name=values(name), mobile=values(mobile), thumb_avatar=values(thumb_avatar), avatar=values(avatar), position=values(position), email=values(email), department=values(department)
+    </insert>
+
+    <select id="queryById" resultMap="EmployeeDetailMap">
+        select
+          id, userid, name, mobile, avatar, thumb_avatar, position , email, department
+        from employee
+        where id = #{id}
+    </select>
+
+    <select id="queryByMobile" resultMap="EmployeeDetailMap">
+        select
+          id, userid, name, mobile, avatar, thumb_avatar, position , email, department
+        from employee
+        where mobile = #{mobile}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="list" resultMap="EmployeeMap">
+        select
+          id, userid, name, mobile, avatar, thumb_avatar, position , email, department
+        from employee
+    </select>
+
+    <select id="queryAllByLimit" resultMap="EmployeeMap">
+        select
+          id, userid, name, mobile, avatar, thumb_avatar, position , email, department
+        from employee
+        limit #{offset}, #{limit}
+    </select>
+
+</mapper>

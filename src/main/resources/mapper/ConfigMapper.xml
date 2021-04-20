@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.config.mapper.ConfigMapper">
+
+    <resultMap type="com.qc.config.dto.Config" id="ConfigMap">
+        <id property="id" column="id" />
+        <result property="module" column="module" jdbcType="VARCHAR"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="value" column="value" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="queryByModule" resultMap="ConfigMap">
+        select
+          id, module, code, value
+        from config
+        where module = #{module} and status=1
+    </select>
+
+    <select id="queryByModules" resultMap="ConfigMap">
+        select
+          id, module, code, value
+        from config
+        where module in
+        <foreach collection="modules" item="m" index="index" open="(" close=")" separator=",">
+            #{m}
+        </foreach>
+        and status=1
+    </select>
+
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.security.account.mapper.AccountMapper">
+
+    <resultMap type="com.qc.security.account.dto.Account" id="AccountMap">
+        <id property="id" column="id" />
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="token" column="token" jdbcType="VARCHAR"/>
+        <result property="authority" column="authority" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="thumbAvatar" column="thumb-avatar" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <update id="updateTokenByAccount">
+        update account set token=#{token}
+        where id=#{id}
+    </update>
+
+    <update id="updateTokenByToken">
+        update account set token=#{newToken}
+        where token=#{newToken}
+    </update>
+
+
+
+    <select id="getByMobile" resultMap="AccountMap">
+        select
+        a.*, e.mobile, e.name, e.avatar, e.thumb_avatar
+        from account a
+        left join employee e on a.employee_id=e.id
+        where e.mobile = #{mobile}
+        limit 1
+    </select>
+
+
+    <select id="getByToken" resultMap="AccountMap">
+        select
+        a.*, e.mobile, e.name, e.avatar, e.thumb_avatar
+        from account a
+        left join employee e on a.employee_id=e.id
+        where a.token = #{token}
+        limit 1
+    </select>
+
+    <select id="list" resultMap="AccountMap">
+        select
+          a.*, e.mobile, e.name, e.avatar, e.thumb_avatar
+        from account a
+        left join employee e on a.employee_id=e.id
+        order by a.creation_time desc
+    </select>
+
+    <select id="queryAllByLimit" resultMap="AccountMap">
+        select
+          a.*, e.mobile, e.name, e.avatar, e.thumb_avatar
+        from account a
+        left join employee e on a.employee_id=e.id
+        order by a.creation_time desc
+        limit #{offset}, #{limit}
+    </select>
+
+
+
+
+
+</mapper>
