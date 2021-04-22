@@ -20,9 +20,22 @@
 
     <update id="updateTokenByToken">
         update account set token=#{newToken}
-        where token=#{newToken}
+        where token=#{oldToken}
     </update>
-
+    <update id="updateTokenByMobile">
+        update account a, employee e
+        set a.token=#{token}
+        where e.id=a.employee_id and e.mobile=#{mobile}
+    </update>
+    <update id="updatePasswordByMobile">
+        update account a, employee e
+        set a.password=#{newPass}
+        where e.id=a.employee_id and e.mobile=#{mobile}
+    </update>
+    <delete id="delAccount">
+        delete a.* from account a, employee e
+        where e.id=a.employee_id and e.mobile=#{mobile}
+    </delete>
 
 
     <select id="getByMobile" resultMap="AccountMap">

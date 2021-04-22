@@ -2,6 +2,7 @@ package com.qc.config;
 
 import com.qc.config.dto.Config;
 import com.qc.config.mapper.ConfigMapper;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class ConfigService {
 
     private static Logger logger = LoggerFactory.getLogger(ConfigService.class);
 
+    @Getter
     @Autowired
     private InitConfigProperties initConfigProperties;
 
@@ -27,7 +29,7 @@ public class ConfigService {
 
     private Map<String, String> configMap = new HashMap<>();
 
-    private Boolean enableChatData;
+    private static ConfigService ins;
 
     @PostConstruct
     public void initServices() {
@@ -35,8 +37,7 @@ public class ConfigService {
         List<String> initModules = initConfigProperties.getModules();
         Collection<Config> configs = configMapper.queryByModules(initModules);
         toModuleConfigs(configs);
-
-        enableChatData = initConfigProperties.getChatdata();
+        ins =  this;
     }
 
     private void toModuleConfigs(Collection<Config> configs) {
@@ -60,7 +61,18 @@ public class ConfigService {
         return v;
     }
 
-    public boolean isEnableChatData() {
-        return enableChatData;
+    public static boolean isEnableChatData() {
+        return ins.getInitConfigProperties().getChatdata();
+//        return initConfigProperties.getChatdata();
+    }
+
+    public static boolean isEnableEmployeeSync() {
+        return ins.getInitConfigProperties().getEmployee();
+//        return initConfigProperties.getEmployee();
+    }
+
+    public static boolean isEnableExternalContactSync() {
+        return ins.getInitConfigProperties().getExternalConcat();
+//        return initConfigProperties.getExternalConcat();
     }
 }

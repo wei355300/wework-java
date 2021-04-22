@@ -48,4 +48,21 @@ public class AccountServiceImpl implements AccountService {
         PageInfo page = new PageInfo(list);
         return PaginationResponse.toPagination(page);
     }
+
+    @Transactional
+    @Override
+    public void updatePassword(String mobile, String newPass) {
+        accountMapper.updatePasswordByMobile(mobile, newPass);
+        disableToken(mobile);
+
+    }
+
+    @Override
+    public void delAccount(String mobile) {
+        accountMapper.delAccount(mobile);
+    }
+
+    private void disableToken(String mobile) {
+        accountMapper.updateTokenByMobile(mobile,"");
+    }
 }

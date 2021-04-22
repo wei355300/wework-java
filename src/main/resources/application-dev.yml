@@ -2,6 +2,11 @@
 server:
   port: 8082
 
+#spring:
+#  profiles:
+#    active: dev
+
+
 spring:
   datasource:
     url: jdbc:mysql://rdsby7jiru36zyv6o.mysql.rds.aliyuncs.com:3306/wework?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
@@ -29,9 +34,24 @@ init:
     modules:
       - oss_media
       - wechat_cp_app
-    chatdata: true
-    employee: true
-    external_contact: true
+    chatdata: false
+    employee: false
+    external_contact: false
+
+
+#wechat:
+#  cp:
+#    corpId: wwb81640d935ddafe4
+#    appConfigs:
+#      - name: chatdata
+#        agentId: 101
+#        secret: HDIZ5R_BRPyqtGbYFUj0Lromom_U-WoRZGZxVcIPmo0
+#        token:
+#        aesKey:
+#      - name: employee
+#        agentId: 102
+#        secret: uCI9rKmb3aAmCfp2KtiD7vjHj_COXQh2QPxyUJRiJQc
+
 
 mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml

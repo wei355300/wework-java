@@ -12,4 +12,8 @@ public class InitConfigProperties {
     private List<String> modules;
 
     private Boolean chatdata;
+
+    private Boolean externalConcat;
+
+    private Boolean employee;
 }

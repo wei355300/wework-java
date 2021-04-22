@@ -12,4 +12,8 @@ public interface AccountService {
     String refreshAccountToken(Integer accountId);
 
     PaginationResponse<Account> list(int pageNum, int pageSize);
+
+    void updatePassword(String mobile, String newPass);
+
+    void delAccount(String mobile);
 }

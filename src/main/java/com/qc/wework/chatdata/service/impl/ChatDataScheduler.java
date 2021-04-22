@@ -1,5 +1,6 @@
 package com.qc.wework.chatdata.service.impl;
 
+import com.qc.config.ConfigService;
 import com.qc.msg.exception.FinanceException;
 import com.qc.wework.chatdata.service.ChatDataService;
 import org.slf4j.Logger;
@@ -23,6 +24,10 @@ public class ChatDataScheduler {
     @Scheduled(cron = "0 0 0/3 * * ?")
     public void syncMsg() throws FinanceException {
         logger.info("开始同步会话存档内容...");
+        if (!ConfigService.isEnableChatData()) {
+            logger.info("未激活同步任务, 跳过任务");
+            return;
+        }
         chatDataService.triggerSyncChatData();
         logger.info("同步结束 !");
     }
