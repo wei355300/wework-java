@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.qc.base.PaginationResponse;
 import com.qc.security.account.dto.Account;
+import com.qc.security.account.exception.AccountExistException;
 import com.qc.security.account.mapper.AccountMapper;
 import com.qc.security.account.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -30,6 +32,14 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.getByToken(token);
     }
 
+    @Override
+    public PaginationResponse<Account> list(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Account> list = accountMapper.list();
+        PageInfo page = new PageInfo(list);
+        return PaginationResponse.toPagination(page);
+    }
+
     @Transactional
     @Override
     public String refreshAccountToken(Integer accountId) {
@@ -41,12 +51,14 @@ public class AccountServiceImpl implements AccountService {
         return uuid;
     }
 
+    @Transactional
     @Override
-    public PaginationResponse<Account> list(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Account> list = accountMapper.list();
-        PageInfo page = new PageInfo(list);
-        return PaginationResponse.toPagination(page);
+    public void openAccount(String mobile, String pass, String authority) throws AccountExistException {
+        Account account = accountMapper.getByMobile(mobile);
+        if (Objects.nonNull(account)) {
+            throw new AccountExistException();
+        }
+        accountMapper.openAccount(mobile, pass, authority);
     }
 
     @Transactional

@@ -2,6 +2,7 @@ package com.qc.security.account.service;
 
 import com.qc.base.PaginationResponse;
 import com.qc.security.account.dto.Account;
+import com.qc.security.account.exception.AccountExistException;
 
 public interface AccountService {
 
@@ -12,6 +13,8 @@ public interface AccountService {
     String refreshAccountToken(Integer accountId);
 
     PaginationResponse<Account> list(int pageNum, int pageSize);
+
+    void openAccount(String mobile, String pass, String authority) throws AccountExistException;
 
     void updatePassword(String mobile, String newPass);
 

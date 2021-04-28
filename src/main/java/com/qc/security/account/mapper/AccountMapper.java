@@ -26,4 +26,6 @@ public interface AccountMapper {
     void updatePasswordByMobile(@Param("mobile") String mobile, @Param("newPass") String newPass);
 
     void delAccount(@Param("mobile") String mobile);
+
+    void openAccount(@Param("mobile") String mobile, @Param("pass") String pass, @Param("authority") String authority);
 }
