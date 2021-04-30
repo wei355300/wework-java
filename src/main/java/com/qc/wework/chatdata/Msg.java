@@ -1,4 +1,4 @@
-package com.qc.wework.chatdata.fetcher;
+package com.qc.wework.chatdata;
 
 public interface Msg {
 
@@ -41,5 +41,9 @@ public interface Msg {
         String MSGTIME = "msgtime";
         String MSGTYPE = "msgtype";
         String CONTENT = "content";
+    }
+
+    interface Action {
+        String SEND = "send";
     }
 }

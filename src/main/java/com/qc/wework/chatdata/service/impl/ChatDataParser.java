@@ -20,6 +20,8 @@ class ChatDataParser extends AbstractChatDataParser {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatDataParser.class);
 
+    private static final int PRE_PARSE_LIMIT_NUM = 10;
+
     private ChatDataMapper chatDataMapper;
 
     private ChatDataParser(WxCpService wxCpService) {
@@ -66,14 +68,14 @@ class ChatDataParser extends AbstractChatDataParser {
         //从chat_data_content取得最后一个history_id
         int historyId = getLatestUnParseId();
         logger.info("latest parsed msg id: {}", historyId);
-        List<ChatDataItem> chatDataItems = getUnParseChatData(historyId, 10);
+        List<ChatDataItem> chatDataItems = getUnParseChatData(historyId, PRE_PARSE_LIMIT_NUM);
         if (CollectionUtils.isEmpty(chatDataItems)) {
             logger.debug("chat data items was empty");
             return;
         }
         parseAndSaveChatDataItems(sdk, chatDataItems);
         // 递归解析
-        if (chatDataItems.size() == 10) {
+        if (chatDataItems.size() == PRE_PARSE_LIMIT_NUM) {
             logger.debug("has more un parse chat data msg, continue...");
             parseChatData(sdk);
         }

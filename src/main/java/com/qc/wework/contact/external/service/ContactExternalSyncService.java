@@ -38,7 +38,6 @@ public class ContactExternalSyncService {
 
     @Getter
     private WxCpService wxCpService;
-    private ConfigService configService;
 
     @Autowired
     private ContactExternalMapper contactExternalMapper;
@@ -51,14 +50,12 @@ public class ContactExternalSyncService {
     }
 
     private void toWxCpService(ConfigService configService) {
-        this.configService = configService;
         String configs = configService.getConfig(Cfg.MODULE, Cfg.CODE);
         ContactConfig contactConfig = JsonUtils.parser(configs, ContactConfig.class);
         this.wxCpService = contactConfig.parse();
     }
 
     public void syncExternalContacts() {
-        prepare();
         syncByEmployees();
     }
 
@@ -115,11 +112,4 @@ public class ContactExternalSyncService {
         });
         contactExternalMapper.insertOrUpdateContactExternal(externalContactList);
     }
-
-    private void prepare() {
-        if (!ConfigService.isEnableExternalContactSync()) {
-            throw new IllegalStateException("同步任务未激活, 无需同步");
-        }
-    }
-
 }

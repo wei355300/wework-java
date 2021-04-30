@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 @ToString
 @Data
@@ -17,4 +18,6 @@ public class ChatDataParsed {
     private Date msgtime;
     private String msg;
     private String content;
+    private List<String> toList;
+    private String from;
 }

@@ -29,15 +29,12 @@ public class ConfigService {
 
     private Map<String, String> configMap = new HashMap<>();
 
-    private static ConfigService ins;
-
     @PostConstruct
     public void initServices() {
         logger.info("init ConfigService to loading module configs");
         List<String> initModules = initConfigProperties.getModules();
         Collection<Config> configs = configMapper.queryByModules(initModules);
         toModuleConfigs(configs);
-        ins =  this;
     }
 
     private void toModuleConfigs(Collection<Config> configs) {
@@ -61,18 +58,15 @@ public class ConfigService {
         return v;
     }
 
-    public static boolean isEnableChatData() {
-        return ins.getInitConfigProperties().getChatdata();
-//        return initConfigProperties.getChatdata();
+    public boolean isEnableChatData() {
+        return getInitConfigProperties().getChatdata();
     }
 
-    public static boolean isEnableEmployeeSync() {
-        return ins.getInitConfigProperties().getEmployee();
-//        return initConfigProperties.getEmployee();
+    public boolean isEnableEmployeeSync() {
+        return getInitConfigProperties().getEmployee();
     }
 
-    public static boolean isEnableExternalContactSync() {
-        return ins.getInitConfigProperties().getExternalConcat();
-//        return initConfigProperties.getExternalConcat();
+    public boolean isEnableExternalContactSync() {
+        return getInitConfigProperties().getExternalConcat();
     }
 }

@@ -17,6 +17,9 @@ public class ChatDataScheduler {
     @Autowired
     private ChatDataService chatDataService;
 
+    @Autowired
+    private ConfigService configService;
+
     /**
      * 每3小时执行
      * @throws FinanceException
@@ -24,7 +27,7 @@ public class ChatDataScheduler {
     @Scheduled(cron = "0 0 0/3 * * ?")
     public void syncMsg() throws FinanceException {
         logger.info("开始同步会话存档内容...");
-        if (!ConfigService.isEnableChatData()) {
+        if (!configService.isEnableChatData()) {
             logger.info("未激活同步任务, 跳过任务");
             return;
         }
