@@ -11,19 +11,6 @@
         <result property="creationDate" column="creation_date" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <!--<resultMap type="com.qc.wework.chatdata.dto.ChatDataItemContent" id="ChatDataItemContentMap">-->
-        <!--<id property="id" column="id" />-->
-        <!--<result property="history_id" column="history_id" jdbcType="INTEGER"/>-->
-        <!--<result property="msgid" column="msgid" jdbcType="VARCHAR"/>-->
-        <!--<result property="action" column="encrypt_random_key" jdbcType="VARCHAR"/>-->
-        <!--<result property="from" column="from" jdbcType="VARCHAR"/>-->
-        <!--<result property="tolist" column="tolist" jdbcType="VARCHAR"/>-->
-        <!--<result property="roomid" column="roomid" jdbcType="VARCHAR"/>-->
-        <!--<result property="msgtime" column="msgtime" jdbcType="TIMESTAMP"/>-->
-        <!--<result property="msgtype" column="msgtype" jdbcType="VARCHAR"/>-->
-        <!--<result property="content" column="content" jdbcType="LONGVARCHAR"/>-->
-    <!--</resultMap>-->
-
     <resultMap type="com.qc.wework.chatdata.dto.ChatDataParsed" id="MediaContentMap">
         <id property="id" column="id" />
         <result property="history_id" column="history_id" jdbcType="INTEGER"/>
@@ -47,6 +34,18 @@
         <foreach collection="chatDataParsedList" item="item" separator=",">
             (#{item.history_id}, #{item.msgid}, #{item.action}, #{item.msgtype}, #{item.roomid}, #{item.msgtime}, #{item.msg}, #{item.content})
         </foreach>
+    </insert>
+    <insert id="insertChatDataRoomShip">
+        insert into chat_data_room (history_id, `from`, `to`, roomid)
+        values
+        <foreach collection="chatDataParsedList" item="item" separator=",">
+            <if test="item != null and item.roomid != null and item.roomid != ''">
+                <foreach collection="item.toList" item="to" separator=",">
+                    (#{item.history_id}, #{item.from}, #{to}, #{item.roomid})
+                </foreach>
+            </if>
+        </foreach>
+        on duplicate key update history_id=values(history_id)
     </insert>
 
     <update id="updateChatDataMedia">
@@ -95,6 +94,13 @@
         limit 1
     </select>
 
+    <select id="getParseChatDataItem" resultMap="MediaContentMap">
+        select
+          *
+        from chat_data_parsed
+        limit #{limit} offset #{offset}
+    </select>
+
     <select id="getUnParseMediaItem" resultMap="MediaContentMap">
         select
         *
@@ -113,13 +119,6 @@
         select * from chat_data_parsed
         where history_id=#{historyId}
     </select>
-
-
-
-
-
-
-
 
 
 </mapper>

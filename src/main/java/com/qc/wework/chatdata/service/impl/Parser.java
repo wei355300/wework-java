@@ -13,9 +13,19 @@ import java.util.*;
 
 public class Parser {
 
-    private static final Logger logger = LoggerFactory.getLogger(Parser.class);
+    private final Logger logger = LoggerFactory.getLogger(Parser.class);
 
-    private static final String EMPTY_STR = "";
+    private final String EMPTY_STR = "";
+
+    private static Parser ins = new Parser();
+
+    private Parser() {
+        ins = this;
+    }
+
+    public static Parser getInstance() {
+        return ins;
+    }
 
     /**
      *
@@ -24,7 +34,9 @@ public class Parser {
      * @param resultContent
      * @return
      */
-    public static ChatDataParsed toChatDataParsed(Integer chatDataId, String msgId, String resultContent) {
+    public ChatDataParsed toChatDataParsed(Integer chatDataId, String msgId, String resultContent) {
+
+        logger.debug("解析内容", resultContent);
 
         JsonObject jo = JsonParser.parseString(resultContent).getAsJsonObject();
 
@@ -71,15 +83,17 @@ public class Parser {
             chatDataParsed.setRoomid(concat(from, toList));
         }
 
+        logger.debug("解析结果", chatDataParsed.toString());
+
         return chatDataParsed;
     }
 
-    private static Optional<String> parseMsgContent(JsonObject jo) {
+    private Optional<String> parseMsgContent(JsonObject jo) {
         String msg = jo.get(Msg.Type.TEXT).getAsJsonObject().get(Msg.Prop.CONTENT).getAsString();
         return Optional.of(msg);
     }
 
-    private static Optional<String> parseMsgType(JsonObject jo) {
+    private Optional<String> parseMsgType(JsonObject jo) {
         JsonElement jeMsgType = jo.get(Msg.Prop.MSGTYPE);
         if (Objects.nonNull(jeMsgType)) {
             return Optional.of(jeMsgType.getAsString());
@@ -87,7 +101,7 @@ public class Parser {
         return Optional.empty();
     }
 
-    private static Optional<String> parseAction(JsonObject jo) {
+    private Optional<String> parseAction(JsonObject jo) {
         JsonElement jeAction = jo.get(Msg.Prop.ACTION);
         if (Objects.nonNull(jeAction)) {
             return Optional.of(jeAction.getAsString());
@@ -95,7 +109,7 @@ public class Parser {
         return Optional.empty();
     }
 
-    private static Optional<Date> parseMsgTime(JsonObject jo) {
+    private Optional<Date> parseMsgTime(JsonObject jo) {
         JsonElement jeMsgtime = jo.get(Msg.Prop.MSGTIME);
         if (Objects.nonNull(jeMsgtime)) {
             return Optional.of(new Date(jeMsgtime.getAsLong()));
@@ -103,7 +117,7 @@ public class Parser {
         return Optional.empty();
     }
 
-    private static Optional<String> parseFrom(JsonObject jo) {
+    private Optional<String> parseFrom(JsonObject jo) {
         JsonElement jeFrom = jo.get(Msg.Prop.FROM);
         if (Objects.nonNull(jeFrom)) {
             return Optional.of(jeFrom.getAsString());
@@ -111,7 +125,7 @@ public class Parser {
         return Optional.empty();
     }
 
-    private static Optional<List<String>> parseToList(JsonObject jo) {
+    private Optional<List<String>> parseToList(JsonObject jo) {
         JsonElement jeToList = jo.get(Msg.Prop.TOLIST);
         if (Objects.isNull(jeToList)) {
             return Optional.empty();
@@ -122,7 +136,7 @@ public class Parser {
         return Optional.of(toList);
     }
 
-    private static Optional<String> parseRoomId(JsonObject jo) {
+    private Optional<String> parseRoomId(JsonObject jo) {
         JsonElement jeRoomid = jo.get(Msg.Prop.ROOMID);
         if (Objects.nonNull(jeRoomid)) {
             return Optional.ofNullable(jeRoomid.getAsString());
@@ -130,13 +144,14 @@ public class Parser {
         return Optional.empty();
     }
 
-    private static String concat(Optional<String> from, Optional<List<String>> toList) {
+    private String concat(Optional<String> from, Optional<List<String>> toList) {
         toList.get().add(from.get());
         return sort(toList.get());
     }
 
-    private static String sort(List<String> toList) {
+    private String sort(List<String> toList) {
         Collections.sort(toList);
-        return String.join("_", toList);
+        String str = String.join("_", toList);
+        return str.length() > 100 ? str.substring(0, 100) : str;
     }
 }

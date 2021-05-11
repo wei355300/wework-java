@@ -96,7 +96,7 @@ class ChatDataParser extends AbstractChatDataParser {
                 String resultContent = Finance.GetContentFromSlice(slice);
                 logger.debug("解析结果: {}", resultContent);
 
-                ChatDataParsed chatDataParsed = Parser.toChatDataParsed(item.getId(), item.getMsgid(), resultContent);
+                ChatDataParsed chatDataParsed = Parser.getInstance().toChatDataParsed(item.getId(), item.getMsgid(), resultContent);
 
                 chatDataContents.add(chatDataParsed);
 
@@ -110,7 +110,11 @@ class ChatDataParser extends AbstractChatDataParser {
 
     private void saveChatDataItemContent(List<ChatDataParsed> chatDataParseds) {
         logger.debug("保存解析结果");
+        if (chatDataParseds.isEmpty()) {
+            return;
+        }
         chatDataMapper.insertChatDataParsed(chatDataParseds);
+        chatDataMapper.insertChatDataRoomShip(chatDataParseds);
     }
 
     private List<ChatDataItem> getUnParseChatData(int historyId, int limit) {

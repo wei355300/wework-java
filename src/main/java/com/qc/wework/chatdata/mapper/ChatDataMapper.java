@@ -22,6 +22,8 @@ public interface ChatDataMapper {
 
     Integer getLatestParsedIdOfMediaData(@Param("mediaTypes") List<String> mediaTypes);
 
+    List<ChatDataParsed> getParseChatDataItem(@Param("limit") int limit, @Param("offset") int offset);
+
     List<ChatDataItem> getUnParseChatDataItem(@Param("historyId") int historyId, @Param("limit") int limit);
 
     List<ChatDataParsed> getUnParseMediaItem(@Param("historyId") int historyId, @Param("mediaTypes") List<String> mediaTypes, @Param("limit") int limit);
@@ -33,4 +35,6 @@ public interface ChatDataMapper {
     void insertChatDataParsed(@Param("chatDataParsedList") List<ChatDataParsed> chatDataParseds);
 
     int updateChatDataMedia(@Param("historyId") int historyId, @Param("mediaUrl") String mediaUrl);
+
+    void insertChatDataRoomShip(@Param("chatDataParsedList") List<ChatDataParsed> chatDataParseds);
 }
