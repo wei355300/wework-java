@@ -1,6 +1,6 @@
 package com.qc.wework.chatdata.service.impl;
 
-import com.qc.msg.exception.FinanceException;
+import com.qc.wework.msg.exception.FinanceException;
 import com.tencent.wework.Finance;
 import me.chanjar.weixin.cp.api.WxCpService;
 import org.slf4j.Logger;

@@ -1,7 +1,8 @@
 package com.qc.wework.chatdata.service.impl;
 
 
-import com.qc.msg.exception.FinanceException;
+import com.qc.wework.msg.exception.FinanceException;
+import com.qc.wework.chatdata.ChatDataMsg;
 import com.qc.wework.chatdata.mapper.ChatDataMapper;
 import com.tencent.wework.Finance;
 import com.qc.wework.chatdata.dto.ChatDataItem;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 class ChatDataParser extends AbstractChatDataParser {
 
@@ -114,7 +116,10 @@ class ChatDataParser extends AbstractChatDataParser {
             return;
         }
         chatDataMapper.insertChatDataParsed(chatDataParseds);
-        chatDataMapper.insertChatDataRoomShip(chatDataParseds);
+
+        //将 action = switch 的消息排除, 该消息没有roomid
+        List<ChatDataParsed> roomShipList = chatDataParseds.stream().filter(c -> !ChatDataMsg.Action.SWITCH.equals(c.getAction())).collect(Collectors.toList());
+        chatDataMapper.insertChatDataRoomShip(roomShipList);
     }
 
     private List<ChatDataItem> getUnParseChatData(int historyId, int limit) {

@@ -1,7 +1,7 @@
 package com.qc.wework.chatdata.service.impl;
 
 
-import com.qc.msg.exception.FinanceException;
+import com.qc.wework.msg.exception.FinanceException;
 import com.qc.utils.JsonUtils;
 import com.qc.wework.chatdata.dto.ChatData;
 import com.qc.wework.chatdata.mapper.ChatDataMapper;

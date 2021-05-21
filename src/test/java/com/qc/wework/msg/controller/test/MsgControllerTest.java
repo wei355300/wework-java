@@ -1,4 +1,4 @@
-package com.qc.wework.account.controller.test;
+package com.qc.wework.msg.controller.test;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,16 +10,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("dev")
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AccountControllerTest {
+public class MsgControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private static final String token = "";
+    private static final String current = "0";
+    private static final String pageSize = "10";
 
     private String loginParam() {
         return "{\n" +
@@ -28,25 +31,23 @@ public class AccountControllerTest {
                 "}";
     }
 
+//    @Test
+//    public void testLogin() throws Exception {
+//
+//        ResultActions actions = mockMvc.perform(post("/api/qc/login").content(loginParam()).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
+//        System.out.println(actions.andReturn().getResponse().getContentAsString());
+//    }
+
     @Test
-    public void testLogin() throws Exception {
+    public void testListMsgRooms() throws Exception {
 
-        ResultActions actions = mockMvc.perform(post("/api/qc/login").content(loginParam()).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
-        System.out.println(actions.andReturn().getResponse().getContentAsString());
-    }
-
-    @Test
-    public void testListAccounts() throws Exception {
-
-        ResultActions actions = mockMvc.perform(get("/api/qc/wework/account/list")
-                .header("token", "31961c80-558c-44f8-bc07-264d793a664b")
-                .param("pageNum", "1")
-                .param("pageSize", "1")
+        ResultActions actions = mockMvc.perform(get("/api/qc/wework/msg/room/list")
+                .header("token", token)
+                .param("current", current)
+                .param("pageSize", pageSize)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
 
         System.out.println(actions.andReturn().getResponse().getContentAsString());
     }
 }
-
-

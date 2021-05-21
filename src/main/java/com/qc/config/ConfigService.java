@@ -20,7 +20,7 @@ public class ConfigService {
 
     private static Logger logger = LoggerFactory.getLogger(ConfigService.class);
 
-    @Getter
+//    @Getter
     @Autowired
     private InitConfigProperties initConfigProperties;
 
@@ -59,14 +59,14 @@ public class ConfigService {
     }
 
     public boolean isEnableChatData() {
-        return getInitConfigProperties().getChatdata();
+        return initConfigProperties.getChatdata();
     }
 
     public boolean isEnableEmployeeSync() {
-        return getInitConfigProperties().getEmployee();
+        return initConfigProperties.getEmployee();
     }
 
     public boolean isEnableExternalContactSync() {
-        return getInitConfigProperties().getExternalConcat();
+        return initConfigProperties.getExternalContact();
     }
 }

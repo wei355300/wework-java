@@ -35,7 +35,8 @@ public class AccountController extends QcBaseController {
     }
 
     @GetMapping("/list")
-    public R<Collection<Account>> listAccounts(@RequestParam(name = "current", required = false, defaultValue = "1") int pageNum, @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize) {
+    public R<Collection<Account>> listAccounts(@RequestParam(name = "current", required = false, defaultValue = "1") int pageNum,
+                                               @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize) {
         PaginationResponse<Account> list = accountService.list(pageNum, pageSize);
         return R.suc(list);
     }

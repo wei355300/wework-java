@@ -10,6 +10,7 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.WxCpUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,8 +39,10 @@ public class EmployeeSyncService {
         this.wxCpService = contactConfig.parse();
     }
 
-    void syncEmployees() throws WxErrorException {
+    @Async
+    public void syncEmployees() throws WxErrorException {
         syncEmployeeDetail();
+        // fixme 触发更新联系人 {@link ContactGrabber} 信息
     }
 
     private void syncEmployeeDetail() throws WxErrorException {

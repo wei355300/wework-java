@@ -21,6 +21,8 @@ http://www.588zj.com/article/qywxDev
 
 # 上传jar文件到测试机器
 ```bash
+scp target/chatdata-0.0.1-SNAPSHOT.jar root@101.37.90.197:/root/chat-data/
+
 scp target/chatdata-0.0.1-SNAPSHOT.jar ecs-proxy-sandbox@47.111.16.230:/home/ecs-proxy-sandbox/
 ```
 
@@ -53,6 +55,11 @@ curl -i -X POST -H "token: eb7706db-cde3-4804-af79-155e3dacf392" http://localhos
 ## 同步内容
 ```bash
 curl -i -X POST -H "token: eb7706db-cde3-4804-af79-155e3dacf392" http://localhost:8082/api/wework/msg/sync
+```
+
+## 获取登录账号基本信息
+```bash
+curl -i -X GET -H "token: df102559-9321-4a51-8c3d-bf1c3c87dc27" http://localhost:8082/api/qc/wework/account/basic
 ```
 
 ## 登录

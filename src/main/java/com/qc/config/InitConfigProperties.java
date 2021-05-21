@@ -13,7 +13,7 @@ public class InitConfigProperties {
 
     private Boolean chatdata;
 
-    private Boolean externalConcat;
+    private Boolean externalContact;
 
     private Boolean employee;
 }

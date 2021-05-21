@@ -1,6 +1,8 @@
-package com.qc.wework.contact.external.service;
+package com.qc.wework.employee.service.impl;
 
 import com.qc.config.ConfigService;
+import com.qc.wework.employee.exception.EmployeeSyncException;
+import com.qc.wework.employee.service.EmployeeService;
 import com.qc.wework.msg.exception.FinanceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,28 +11,29 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ContactExternalScheduler {
+public class EmployeeScheduler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContactExternalScheduler.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeScheduler.class);
 
     @Autowired
-    private ContactExternalSyncService contactExternalSyncService;
+    private EmployeeService employeeService;
 
     @Autowired
     private ConfigService configService;
 
     /**
      * 每5小时执行
+     *
      * @throws FinanceException
      */
     @Scheduled(cron = "0 0 0/5 * * ?")
-    public void syncContactExternal() {
-        logger.info("开始同步外部联系人...");
-        if (!configService.isEnableExternalContactSync()) {
+    public void syncContactExternal() throws EmployeeSyncException {
+        logger.info("开始员工...");
+        if (!configService.isEnableEmployeeSync()) {
             logger.info("未激活同步任务, 跳过任务");
             return;
         }
-        contactExternalSyncService.syncExternalContacts();
-        logger.info("外部联系人同步结束 !");
+        employeeService.triggerSyncChatData();
+        logger.info("员工同步结束 !");
     }
 }

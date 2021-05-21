@@ -14,6 +14,7 @@ import me.chanjar.weixin.cp.bean.external.contact.WxCpExternalContactBatchInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -35,7 +36,6 @@ public class ContactExternalSyncService {
 
     }
 
-
     @Getter
     private WxCpService wxCpService;
 
@@ -55,8 +55,11 @@ public class ContactExternalSyncService {
         this.wxCpService = contactConfig.parse();
     }
 
+    @Async
     public void syncExternalContacts() {
         syncByEmployees();
+        // fixme 触发更新联系人 {@link ContactGrabber} 信息
+
     }
 
     /**

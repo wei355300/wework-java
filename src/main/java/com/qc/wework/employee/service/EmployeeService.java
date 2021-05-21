@@ -4,8 +4,7 @@ import com.qc.base.PaginationResponse;
 import com.qc.wework.employee.dto.Department;
 import com.qc.wework.employee.dto.Employee;
 import com.qc.wework.employee.dto.EmployeeDetail;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.cp.api.WxCpService;
+import com.qc.wework.employee.exception.EmployeeSyncException;
 
 import java.util.Collection;
 
@@ -14,10 +13,7 @@ import java.util.Collection;
  */
 public interface EmployeeService {
 
-    /**
-     * 同步所有的员工
-     */
-    void syncEmployees() throws WxErrorException;
+    void triggerSyncChatData() throws EmployeeSyncException;
 
     EmployeeDetail getEmployeeById(int id);
 
@@ -29,6 +25,7 @@ public interface EmployeeService {
 
     /**
      * 获取所有的部门列表
+     *
      * @return
      */
     Collection<Department> listDepartments();

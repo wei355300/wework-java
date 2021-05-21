@@ -5,6 +5,7 @@ import com.qc.base.QcBaseException;
 import com.qc.base.R;
 import com.qc.wework.employee.dto.Employee;
 import com.qc.wework.employee.dto.EmployeeDetail;
+import com.qc.wework.employee.exception.EmployeeSyncException;
 import com.qc.wework.employee.service.EmployeeService;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.slf4j.Logger;
@@ -37,13 +38,8 @@ public class EmployeeController {
     }
 
     @PostMapping("/list/sync")
-    public R syncEmployees() throws QcBaseException {
-        try {
-            this.employeeService.syncEmployees();
-        } catch (WxErrorException e) {
-            logger.error("WxErrorException", e);
-            throw new QcBaseException("2001", "同步失败, 请稍候重试!");
-        }
+    public R syncEmployees() throws EmployeeSyncException {
+        this.employeeService.triggerSyncChatData();
         return R.suc();
     }
 

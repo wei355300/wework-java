@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.qc.wework.chatdata.dto.ChatDataParsed;
-import com.qc.wework.chatdata.Msg;
+import com.qc.wework.chatdata.ChatDataMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,13 +50,13 @@ public class Parser {
             String type = msgType.get();
             chatDataParsed.setMsgtype(type);
 
-            if (Msg.Type.TEXT.equals(type)) {
+            if (ChatDataMsg.Type.TEXT.equals(type)) {
                 Optional<String> msg = parseMsgContent(jo);
                 chatDataParsed.setMsg(msg.orElse(EMPTY_STR));
             }
         }
         else {
-            chatDataParsed.setMsgtype(Msg.Type.CHANGE_ENTERPRISE_LOG);
+            chatDataParsed.setMsgtype(ChatDataMsg.Type.CHANGE_ENTERPRISE_LOG);
         }
 
 
@@ -79,7 +79,7 @@ public class Parser {
         if (roomId.isPresent()) {
             chatDataParsed.setRoomid(roomId.orElse(EMPTY_STR));
         }
-        else if (chatDataParsed.getAction().equals(Msg.Action.SEND)) {
+        else if (chatDataParsed.getAction().equals(ChatDataMsg.Action.SEND)) {
             chatDataParsed.setRoomid(concat(from, toList));
         }
 
@@ -88,13 +88,17 @@ public class Parser {
         return chatDataParsed;
     }
 
+    private void parseRoom() {
+
+    }
+
     private Optional<String> parseMsgContent(JsonObject jo) {
-        String msg = jo.get(Msg.Type.TEXT).getAsJsonObject().get(Msg.Prop.CONTENT).getAsString();
+        String msg = jo.get(ChatDataMsg.Type.TEXT).getAsJsonObject().get(ChatDataMsg.Prop.CONTENT).getAsString();
         return Optional.of(msg);
     }
 
     private Optional<String> parseMsgType(JsonObject jo) {
-        JsonElement jeMsgType = jo.get(Msg.Prop.MSGTYPE);
+        JsonElement jeMsgType = jo.get(ChatDataMsg.Prop.MSGTYPE);
         if (Objects.nonNull(jeMsgType)) {
             return Optional.of(jeMsgType.getAsString());
         }
@@ -102,7 +106,7 @@ public class Parser {
     }
 
     private Optional<String> parseAction(JsonObject jo) {
-        JsonElement jeAction = jo.get(Msg.Prop.ACTION);
+        JsonElement jeAction = jo.get(ChatDataMsg.Prop.ACTION);
         if (Objects.nonNull(jeAction)) {
             return Optional.of(jeAction.getAsString());
         }
@@ -110,7 +114,7 @@ public class Parser {
     }
 
     private Optional<Date> parseMsgTime(JsonObject jo) {
-        JsonElement jeMsgtime = jo.get(Msg.Prop.MSGTIME);
+        JsonElement jeMsgtime = jo.get(ChatDataMsg.Prop.MSGTIME);
         if (Objects.nonNull(jeMsgtime)) {
             return Optional.of(new Date(jeMsgtime.getAsLong()));
         }
@@ -118,7 +122,7 @@ public class Parser {
     }
 
     private Optional<String> parseFrom(JsonObject jo) {
-        JsonElement jeFrom = jo.get(Msg.Prop.FROM);
+        JsonElement jeFrom = jo.get(ChatDataMsg.Prop.FROM);
         if (Objects.nonNull(jeFrom)) {
             return Optional.of(jeFrom.getAsString());
         }
@@ -126,7 +130,7 @@ public class Parser {
     }
 
     private Optional<List<String>> parseToList(JsonObject jo) {
-        JsonElement jeToList = jo.get(Msg.Prop.TOLIST);
+        JsonElement jeToList = jo.get(ChatDataMsg.Prop.TOLIST);
         if (Objects.isNull(jeToList)) {
             return Optional.empty();
         }
@@ -137,7 +141,7 @@ public class Parser {
     }
 
     private Optional<String> parseRoomId(JsonObject jo) {
-        JsonElement jeRoomid = jo.get(Msg.Prop.ROOMID);
+        JsonElement jeRoomid = jo.get(ChatDataMsg.Prop.ROOMID);
         if (Objects.nonNull(jeRoomid)) {
             return Optional.ofNullable(jeRoomid.getAsString());
         }

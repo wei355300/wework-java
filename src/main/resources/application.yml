@@ -10,7 +10,7 @@ spring:
     driver-class-name=: com.mysql.cj.jdbc.Driver
     druid:
       initial-size: 3
-      max-active: 20
+      max-active: 50
       min-idle: 2
       filter:
         slf4j:

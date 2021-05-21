@@ -1,6 +1,6 @@
 package com.qc.wework.chatdata;
 
-public interface Msg {
+public interface ChatDataMsg {
 
     interface Type {
         String TEXT = "text";//文本
@@ -45,5 +45,7 @@ public interface Msg {
 
     interface Action {
         String SEND = "send";
+        String SWITCH = "switch";
+        String RECALL = "recall";
     }
 }

@@ -1,8 +1,7 @@
 package com.qc.wework.chatdata.service;
 
 import com.google.common.collect.Lists;
-import com.qc.msg.exception.FinanceException;
-import com.qc.wework.chatdata.dto.ChatDataItem;
+import com.qc.wework.msg.exception.FinanceException;
 import com.qc.wework.chatdata.dto.ChatDataParsed;
 import com.qc.wework.chatdata.mapper.ChatDataMapper;
 import com.qc.wework.chatdata.service.impl.Parser;
@@ -10,12 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @SpringBootTest

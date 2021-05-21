@@ -7,7 +7,7 @@ import com.google.gson.JsonParser;
 import com.qc.ali.oss.AppendUploader;
 import com.qc.ali.oss.Uploader;
 import com.qc.ali.oss.UploaderStrategy;
-import com.qc.msg.exception.FinanceException;
+import com.qc.wework.msg.exception.FinanceException;
 import com.qc.wework.chatdata.dto.ChatDataParsed;
 import com.qc.wework.chatdata.entity.FileEntity;
 import com.qc.wework.chatdata.entity.ImageEntity;

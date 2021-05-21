@@ -1,7 +1,7 @@
 package com.qc.wework.chatdata.service.impl;
 
 import com.qc.config.ConfigService;
-import com.qc.msg.exception.FinanceException;
+import com.qc.wework.msg.exception.FinanceException;
 import com.qc.wework.chatdata.service.ChatDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +21,10 @@ public class ChatDataScheduler {
     private ConfigService configService;
 
     /**
-     * 每3小时执行
+     * 每1小时执行
      * @throws FinanceException
      */
-    @Scheduled(cron = "0 0 0/3 * * ?")
+    @Scheduled(cron = "0 0 0/1 * * ?")
     public void syncMsg() throws FinanceException {
         logger.info("开始同步会话存档内容...");
         if (!configService.isEnableChatData()) {
