@@ -35,14 +35,27 @@
             (#{item.history_id}, #{item.msgid}, #{item.action}, #{item.msgtype}, #{item.roomid}, #{item.msgtime}, #{item.msg}, #{item.content})
         </foreach>
     </insert>
-    <insert id="insertChatDataRoomShip">
-        insert into chat_data_room (history_id, `from`, `to`, roomid)
+<!--    <insert id="insertChatDataRoomShip">-->
+<!--        insert into chat_data_room (history_id, `from`, `to`, roomid)-->
+<!--        values-->
+<!--        <foreach collection="chatDataParsedList" item="item" separator=",">-->
+<!--            <if test="item != null and item.roomid != null and item.roomid != ''">-->
+<!--                <foreach collection="item.toList" item="to" separator=",">-->
+<!--                    (#{item.history_id}, #{item.from}, #{to}, #{item.roomid})-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--        </foreach>-->
+<!--        on duplicate key update history_id=values(history_id)-->
+<!--    </insert>-->
+    <insert id="insertChatDataRoomUser">
+        insert into chat_data_room_user (history_id, room_user, room_id)
         values
         <foreach collection="chatDataParsedList" item="item" separator=",">
             <if test="item != null and item.roomid != null and item.roomid != ''">
                 <foreach collection="item.toList" item="to" separator=",">
-                    (#{item.history_id}, #{item.from}, #{to}, #{item.roomid})
+                    (#{item.history_id}, #{to}, #{item.roomid})
                 </foreach>
+                ,(#{item.history_id}, #{item.from}, #{item.roomid})
             </if>
         </foreach>
         on duplicate key update history_id=values(history_id)
@@ -94,11 +107,13 @@
         limit 1
     </select>
 
-    <select id="getParseChatDataItem" resultMap="MediaContentMap">
+    <select id="getParsedChatDataItem" resultMap="MediaContentMap">
         select
           *
         from chat_data_parsed
-        limit #{limit} offset #{offset}
+        where history_id > #{historyId}
+        order by id asc
+        limit #{limit}
     </select>
 
     <select id="getUnParseMediaItem" resultMap="MediaContentMap">
@@ -118,6 +133,14 @@
     <select id="getChatDataParsedByHistoryId" resultMap="MediaContentMap">
         select * from chat_data_parsed
         where history_id=#{historyId}
+    </select>
+
+    <select id="getHistoryIdOFLastedParsedRoomUser" resultType="java.lang.Integer">
+        select
+        history_id
+        from chat_data_room_user
+        order by history_id desc
+        limit 1
     </select>
 
 

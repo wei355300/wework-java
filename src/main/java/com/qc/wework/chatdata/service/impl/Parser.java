@@ -1,9 +1,11 @@
 package com.qc.wework.chatdata.service.impl;
 
+import com.google.common.base.Strings;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.qc.utils.StringUtils;
 import com.qc.wework.chatdata.dto.ChatDataParsed;
 import com.qc.wework.chatdata.ChatDataMsg;
 import org.slf4j.Logger;
@@ -45,6 +47,52 @@ public class Parser {
         chatDataParsed.setMsgid(msgId);
         chatDataParsed.setContent(resultContent);
 
+        setMsgType(jo, chatDataParsed);
+        setAction(jo, chatDataParsed);
+        setMsgTime(jo, chatDataParsed);
+        setFrom(jo, chatDataParsed);
+        setToList(jo, chatDataParsed);
+        setRoomId(jo, chatDataParsed);
+
+        logger.debug("解析结果", chatDataParsed.toString());
+
+        return chatDataParsed;
+    }
+
+    private void setRoomId(JsonObject jo, ChatDataParsed chatDataParsed) {
+        //roomid
+        //存在, 表示是个会话聊天
+        //不存在, 将 from与to合并(from+to排序), 默认变为群聊
+        Optional<String> roomId = parseRoomId(jo);
+        if (roomId.isPresent()) {
+            chatDataParsed.setRoomid(roomId.orElse(EMPTY_STR));
+        }
+        else if (chatDataParsed.getAction().equals(ChatDataMsg.Action.SEND)) {
+            chatDataParsed.setRoomid(StringUtils.concat(chatDataParsed.getFrom(), chatDataParsed.getToList()));
+        }
+    }
+
+    private void setToList(JsonObject jo, ChatDataParsed chatDataParsed) {
+        Optional<List<String>> toList = parseToList(jo);
+        chatDataParsed.setToList(toList.orElse(Collections.EMPTY_LIST));
+    }
+
+    private void setFrom(JsonObject jo, ChatDataParsed chatDataParsed) {
+        Optional<String> from = parseFrom(jo);
+        chatDataParsed.setFrom(from.orElse(EMPTY_STR));
+    }
+
+    private void setMsgTime(JsonObject jo, ChatDataParsed chatDataParsed) {
+        Optional<Date> msgTime = parseMsgTime(jo);
+        chatDataParsed.setMsgtime(msgTime.orElse(new Date()));
+    }
+
+    private void setAction(JsonObject jo, ChatDataParsed chatDataParsed) {
+        Optional<String> action = parseAction(jo);
+        chatDataParsed.setAction(action.orElse(EMPTY_STR));
+    }
+
+    private void setMsgType(JsonObject jo, ChatDataParsed chatDataParsed) {
         Optional<String> msgType = parseMsgType(jo);
         if (msgType.isPresent()) {
             String type = msgType.get();
@@ -58,38 +106,6 @@ public class Parser {
         else {
             chatDataParsed.setMsgtype(ChatDataMsg.Type.CHANGE_ENTERPRISE_LOG);
         }
-
-
-        Optional<String> action = parseAction(jo);
-        chatDataParsed.setAction(action.orElse(EMPTY_STR));
-
-        Optional<Date> msgTime = parseMsgTime(jo);
-        chatDataParsed.setMsgtime(msgTime.orElse(new Date()));
-
-        Optional<String> from = parseFrom(jo);
-        chatDataParsed.setFrom(from.orElse(EMPTY_STR));
-
-        Optional<List<String>> toList = parseToList(jo);
-        chatDataParsed.setToList(toList.orElse(Collections.EMPTY_LIST));
-
-        //roomid
-        //存在, 表示是个会话聊天
-        //不存在, 将 from与to合并(from+to排序), 默认变为群聊
-        Optional<String> roomId = parseRoomId(jo);
-        if (roomId.isPresent()) {
-            chatDataParsed.setRoomid(roomId.orElse(EMPTY_STR));
-        }
-        else if (chatDataParsed.getAction().equals(ChatDataMsg.Action.SEND)) {
-            chatDataParsed.setRoomid(concat(from, toList));
-        }
-
-        logger.debug("解析结果", chatDataParsed.toString());
-
-        return chatDataParsed;
-    }
-
-    private void parseRoom() {
-
     }
 
     private Optional<String> parseMsgContent(JsonObject jo) {
@@ -114,9 +130,9 @@ public class Parser {
     }
 
     private Optional<Date> parseMsgTime(JsonObject jo) {
-        JsonElement jeMsgtime = jo.get(ChatDataMsg.Prop.MSGTIME);
-        if (Objects.nonNull(jeMsgtime)) {
-            return Optional.of(new Date(jeMsgtime.getAsLong()));
+        JsonElement jeMsgTime = jo.get(ChatDataMsg.Prop.MSGTIME);
+        if (Objects.nonNull(jeMsgTime)) {
+            return Optional.of(new Date(jeMsgTime.getAsLong()));
         }
         return Optional.empty();
     }
@@ -143,19 +159,11 @@ public class Parser {
     private Optional<String> parseRoomId(JsonObject jo) {
         JsonElement jeRoomid = jo.get(ChatDataMsg.Prop.ROOMID);
         if (Objects.nonNull(jeRoomid)) {
-            return Optional.ofNullable(jeRoomid.getAsString());
+            String roomId = jeRoomid.getAsString();
+            return Optional.ofNullable(Strings.isNullOrEmpty(roomId) ? null : roomId);
         }
         return Optional.empty();
     }
 
-    private String concat(Optional<String> from, Optional<List<String>> toList) {
-        toList.get().add(from.get());
-        return sort(toList.get());
-    }
 
-    private String sort(List<String> toList) {
-        Collections.sort(toList);
-        String str = String.join("_", toList);
-        return str.length() > 100 ? str.substring(0, 100) : str;
-    }
 }

@@ -22,7 +22,7 @@ public interface ChatDataMapper {
 
     Integer getLatestParsedIdOfMediaData(@Param("mediaTypes") List<String> mediaTypes);
 
-    List<ChatDataParsed> getParseChatDataItem(@Param("limit") int limit, @Param("offset") int offset);
+    List<ChatDataParsed> getParsedChatDataItem(@Param("historyId") int preHistoryId, @Param("limit") int limit);
 
     List<ChatDataItem> getUnParseChatDataItem(@Param("historyId") int historyId, @Param("limit") int limit);
 
@@ -36,5 +36,9 @@ public interface ChatDataMapper {
 
     int updateChatDataMedia(@Param("historyId") int historyId, @Param("mediaUrl") String mediaUrl);
 
-    void insertChatDataRoomShip(@Param("chatDataParsedList") List<ChatDataParsed> chatDataParseds);
+//    void insertChatDataRoomShip(@Param("chatDataParsedList") List<ChatDataParsed> chatDataParseds);
+
+    void insertChatDataRoomUser(@Param("chatDataParsedList") List<ChatDataParsed> chatDataParseds);
+
+    int getHistoryIdOFLastedParsedRoomUser();
 }

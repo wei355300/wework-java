@@ -45,7 +45,7 @@ public class ContactExternalSyncService {
     @Autowired
     private EmployeeService employeeService;
 
-    private ContactExternalSyncService(@Autowired ConfigService configService) {
+    public ContactExternalSyncService(@Autowired ConfigService configService) {
         toWxCpService(configService);
     }
 

@@ -29,7 +29,7 @@ public class EmployeeSyncService {
     @Getter
     private WxCpService wxCpService;
 
-    private EmployeeSyncService(@Autowired ConfigService configService) {
+    public EmployeeSyncService(@Autowired ConfigService configService) {
         toWxCpService(configService);
     }
 

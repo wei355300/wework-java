@@ -26,12 +26,12 @@ class ChatDataParser extends AbstractChatDataParser {
 
     private ChatDataMapper chatDataMapper;
 
-    private ChatDataParser(WxCpService wxCpService) {
-        super(wxCpService);
+    private ChatDataParser(String corpId, String corpSecret) {
+        super(corpId, corpSecret);
     }
 
     ChatDataParser(WxCpService wxCpService, ChatDataMapper chatDataMapper) {
-        this(wxCpService);
+        this(wxCpService.getWxCpConfigStorage().getCorpId(), wxCpService.getWxCpConfigStorage().getCorpSecret());
         this.chatDataMapper = chatDataMapper;
     }
 
@@ -68,7 +68,7 @@ class ChatDataParser extends AbstractChatDataParser {
 
     private void parseChatData(long sdk) {
         //从chat_data_content取得最后一个history_id
-        int historyId = getLatestUnParseId();
+        int historyId = getLatestParsedId();
         logger.info("latest parsed msg id: {}", historyId);
         List<ChatDataItem> chatDataItems = getUnParseChatData(historyId, PRE_PARSE_LIMIT_NUM);
         if (CollectionUtils.isEmpty(chatDataItems)) {
@@ -110,16 +110,16 @@ class ChatDataParser extends AbstractChatDataParser {
         saveChatDataItemContent(chatDataContents);
     }
 
-    private void saveChatDataItemContent(List<ChatDataParsed> chatDataParseds) {
+    private void saveChatDataItemContent(List<ChatDataParsed> chatDataParsedList) {
         logger.debug("保存解析结果");
-        if (chatDataParseds.isEmpty()) {
+        if (chatDataParsedList.isEmpty()) {
             return;
         }
-        chatDataMapper.insertChatDataParsed(chatDataParseds);
+        chatDataMapper.insertChatDataParsed(chatDataParsedList);
 
         //将 action = switch 的消息排除, 该消息没有roomid
-        List<ChatDataParsed> roomShipList = chatDataParseds.stream().filter(c -> !ChatDataMsg.Action.SWITCH.equals(c.getAction())).collect(Collectors.toList());
-        chatDataMapper.insertChatDataRoomShip(roomShipList);
+        List<ChatDataParsed> roomShipList = chatDataParsedList.stream().filter(c -> !ChatDataMsg.Action.SWITCH.equals(c.getAction())).collect(Collectors.toList());
+        chatDataMapper.insertChatDataRoomUser(roomShipList);
     }
 
     private List<ChatDataItem> getUnParseChatData(int historyId, int limit) {
@@ -131,7 +131,7 @@ class ChatDataParser extends AbstractChatDataParser {
      * 获取最后一个被解析的会话记录的ID
      * @return
      */
-    private int getLatestUnParseId() {
+    private int getLatestParsedId() {
         Integer latestHistoryId = chatDataMapper.getLatestParsedIdOfChatData();
         logger.debug("get latest history id is {}", latestHistoryId);
         //如果content中没有数据, 默认从history表开始解析

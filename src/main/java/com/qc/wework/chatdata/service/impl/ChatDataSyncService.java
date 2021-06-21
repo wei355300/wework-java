@@ -83,14 +83,14 @@ public class ChatDataSyncService {
          * fixme 可以采用注册机制, 以任务链路的方式调用执行,
          *
          */
-        chatDataSyncer.parse();
+        chatDataSyncer.sync();
         chatDataParser.parse();
         mediaDataParser.parse();
     }
 
     public void syncChatData() throws FinanceException {
         prepare();
-        chatDataSyncer.parse();
+        chatDataSyncer.sync();
     }
 
     public void parseChatData() throws FinanceException {

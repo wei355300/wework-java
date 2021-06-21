@@ -52,7 +52,7 @@ class MediaDataParser extends AbstractChatDataParser {
     private static Map<String, UploadExec> uploadExecs = new HashMap<>();
 
     private MediaDataParser(WxCpService wxCpService) {
-        super(wxCpService);
+        super(wxCpService.getWxCpConfigStorage().getCorpId(), wxCpService.getWxCpConfigStorage().getCorpSecret());
     }
 
     MediaDataParser(WxCpService wxCpService, UploaderStrategy uploaderStrategy, ChatDataMapper chatDataMapper) {
