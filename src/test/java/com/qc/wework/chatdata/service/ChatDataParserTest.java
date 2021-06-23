@@ -75,14 +75,15 @@ public class ChatDataParserTest {
     @Transactional
     @Rollback(false)
     public void parseChatRoomUser() {
-        int historyId = getHistoryIdFromLastedParsedRoomUser();
-        System.out.println("historyId:"+historyId);
-        loopSaveRoomUser(historyId, 30);
+        loopSaveRoomUser();
     }
 
-    private void loopSaveRoomUser(int preHistoryId, int limit) {
+    private void loopSaveRoomUser() {
         time++;
-        List<ChatDataParsed> list = chatDataMapper.getParsedChatDataItem(preHistoryId, limit);
+        int historyId = getHistoryIdFromLastedParsedRoomUser();
+        int limit = 30;
+        System.out.println("historyId:"+historyId);
+        List<ChatDataParsed> list = chatDataMapper.getParsedChatDataItem(historyId, limit);
         saveRoomUser(list);
 
         if (limit == list.size()) {
