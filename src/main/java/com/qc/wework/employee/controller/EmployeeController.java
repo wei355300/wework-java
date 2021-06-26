@@ -1,15 +1,12 @@
 package com.qc.wework.employee.controller;
 
 import com.qc.base.PaginationResponse;
-import com.qc.base.QcBaseException;
 import com.qc.base.R;
 import com.qc.wework.employee.dto.Employee;
 import com.qc.wework.employee.dto.EmployeeDetail;
 import com.qc.wework.employee.exception.EmployeeSyncException;
 import com.qc.wework.employee.service.EmployeeService;
-import me.chanjar.weixin.common.error.WxErrorException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +15,8 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/qc/wework/employee")
+@Slf4j
 public class EmployeeController {
-
-    private Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 
     @Autowired
     private EmployeeService employeeService;

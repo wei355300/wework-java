@@ -28,22 +28,22 @@ public class MsgServiceImpl implements MsgService {
     private ChatDataService chatDataService;
 
     @Override
-    public PaginationResponse<MsgRoom> list(int pageNum, int pageSize) {
+    public PaginationResponse<MsgRoom> listRooms(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<MsgRoom> list = msgMapper.list();
+        List<MsgRoom> list = msgMapper.listRooms();
         PageInfo page = new PageInfo(list);
         return PaginationResponse.toPagination(page);
     }
 
-    @Override
-    public void triggerSyncChatData() throws MsgException {
-        try {
-            chatDataService.triggerSyncChatData();
-        } catch (FinanceException e) {
-            logger.warn("触发同步消息失败!", e);
-            throw new MsgException();
-        }
-    }
+//    @Override
+//    public void triggerSyncChatData() throws MsgException {
+//        try {
+//            chatDataService.triggerSyncChatData();
+//        } catch (FinanceException e) {
+//            logger.warn("触发同步消息失败!", e);
+//            throw new MsgException();
+//        }
+//    }
 
 //    private ChatDataService chatDataService;
 //

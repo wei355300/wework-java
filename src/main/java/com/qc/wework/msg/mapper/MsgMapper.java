@@ -7,5 +7,5 @@ import java.util.List;
 
 @Mapper
 public interface MsgMapper {
-    List<MsgRoom> list();
+    List<MsgRoom> listRooms();
 }

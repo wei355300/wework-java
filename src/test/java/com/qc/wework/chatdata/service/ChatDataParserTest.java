@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
 @SpringBootTest
 @ActiveProfiles("dev")
 public class ChatDataParserTest {

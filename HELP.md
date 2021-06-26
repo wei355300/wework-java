@@ -19,11 +19,16 @@ https://blog.csdn.net/u011056339/article/details/105704995
 http://www.588zj.com/article/qywxDev
 
 
-# 上传jar文件到测试机器
+# 上传jar文件到测试机器 并 启动
 ```bash
+# scp target/chatdata-0.0.1-SNAPSHOT.jar ecs-proxy-sandbox@47.111.16.230:/home/ecs-proxy-sandbox/
 scp target/chatdata-0.0.1-SNAPSHOT.jar root@101.37.90.197:/root/chat-data/
 
-scp target/chatdata-0.0.1-SNAPSHOT.jar ecs-proxy-sandbox@47.111.16.230:/home/ecs-proxy-sandbox/
+# ./cmd.sh restart
+./cmd.sh stop
+./cmd.sh status
+./cmd.sh start  
+
 ```
 
 # OSS地址

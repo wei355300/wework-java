@@ -6,7 +6,7 @@ import com.qc.wework.msg.exception.MsgException;
 
 public interface MsgService {
 
-    PaginationResponse<MsgRoom> list(int pageNum, int pageSize);
+    PaginationResponse<MsgRoom> listRooms(int pageNum, int pageSize);
 
-    void triggerSyncChatData() throws MsgException;
+//    void triggerSyncChatData() throws MsgException;
 }
