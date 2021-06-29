@@ -29,24 +29,13 @@
     </insert>
 
     <insert id="insertChatDataParsed">
-        insert into chat_data_parsed (history_id, msgid, `action`, `msgtype`, roomid, msgtime, msg, content)
+        insert into chat_data_parsed (history_id, msgid, `action`, `msgtype`, roomid, msgtime, msg, content, sender)
         values
         <foreach collection="chatDataParsedList" item="item" separator=",">
-            (#{item.history_id}, #{item.msgid}, #{item.action}, #{item.msgtype}, #{item.roomid}, #{item.msgtime}, #{item.msg}, #{item.content})
+            (#{item.history_id}, #{item.msgid}, #{item.action}, #{item.msgtype}, #{item.roomid}, #{item.msgtime}, #{item.msg}, #{item.content}, #{item.from})
         </foreach>
     </insert>
-<!--    <insert id="insertChatDataRoomShip">-->
-<!--        insert into chat_data_room (history_id, `from`, `to`, roomid)-->
-<!--        values-->
-<!--        <foreach collection="chatDataParsedList" item="item" separator=",">-->
-<!--            <if test="item != null and item.roomid != null and item.roomid != ''">-->
-<!--                <foreach collection="item.toList" item="to" separator=",">-->
-<!--                    (#{item.history_id}, #{item.from}, #{to}, #{item.roomid})-->
-<!--                </foreach>-->
-<!--            </if>-->
-<!--        </foreach>-->
-<!--        on duplicate key update history_id=values(history_id)-->
-<!--    </insert>-->
+
     <insert id="insertChatDataRoomUser">
         insert into chat_data_room_user (history_id, room_user, room_id)
         values

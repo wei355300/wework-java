@@ -7,7 +7,11 @@ public class MsgRoomUser {
 
     private String id;
     private String name;
-    private String crop;
     private String position;
     private String thumbAvatar;
+    /**
+     * 1: 公司员工
+     * 2: 客户
+     */
+    private String type;
 }

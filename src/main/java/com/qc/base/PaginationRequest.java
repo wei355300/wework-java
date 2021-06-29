@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
 public class PaginationRequest {
     @NotNull
     @Min(0)
-    private int current;
+    private int current = 1;
 
     @NotNull
     @Min(1)
     @Max(50)
-    private int pageSize;
+    private int pageSize = 10;
 }

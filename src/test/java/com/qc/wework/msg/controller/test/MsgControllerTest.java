@@ -24,6 +24,8 @@ public class MsgControllerTest {
     private static final String current = "0";
     private static final String pageSize = "10";
 
+    String roomId = "wrxyF2EAAADm8TwetrSSoqdWZCe8OFSA";
+
     private String loginParam() {
         return "{\n" +
                 "    \"mobile\": \"18601690499\",\n" +
@@ -41,10 +43,21 @@ public class MsgControllerTest {
     @Test
     public void testListMsgRooms() throws Exception {
 
-        ResultActions actions = mockMvc.perform(get("/api/qc/wework/msg/room/list")
+        ResultActions actions = mockMvc.perform(get("/api/qc/wework/msg/room/"+roomId+"/content")
                 .header("token", token)
                 .param("current", current)
                 .param("pageSize", pageSize)
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+
+        System.out.println(actions.andReturn().getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testListMemberOfRoom() throws Exception {
+
+        ResultActions actions = mockMvc.perform(get("/api/qc/wework/msg/room/"+roomId+"/members")
+                .header("token", token)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
 

@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.qc.base.PaginationResponse;
 import com.qc.wework.chatdata.service.ChatDataService;
 import com.qc.wework.msg.dto.MsgRoom;
+import com.qc.wework.msg.dto.MsgRoomContent;
+import com.qc.wework.msg.dto.MsgRoomUser;
 import com.qc.wework.msg.exception.FinanceException;
 import com.qc.wework.msg.exception.MsgException;
 import com.qc.wework.msg.mapper.MsgMapper;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -33,6 +36,22 @@ public class MsgServiceImpl implements MsgService {
         List<MsgRoom> list = msgMapper.listRooms();
         PageInfo page = new PageInfo(list);
         return PaginationResponse.toPagination(page);
+    }
+
+    @Override
+    public PaginationResponse<MsgRoomContent> listContentOfRoom(String roomId, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        //fixme
+        // 从 chat_data_parsed 原始数据中, 获取分页记录,
+        // 再解析 原始数据, 并根据原始数据
+        List<MsgRoomContent> list = msgMapper.listContentOfRoom(roomId);
+        PageInfo page = new PageInfo(list);
+        return PaginationResponse.toPagination(page);
+    }
+
+    @Override
+    public Collection<MsgRoomUser> getMemberListOfRoom(String roomId) {
+        return msgMapper.listMembersOfRoom(roomId);
     }
 
 //    @Override

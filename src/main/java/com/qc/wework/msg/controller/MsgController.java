@@ -1,15 +1,18 @@
 package com.qc.wework.msg.controller;
 
+import com.qc.base.PaginationRequest;
 import com.qc.base.PaginationResponse;
 import com.qc.base.R;
 import com.qc.wework.msg.dto.MsgRoom;
+import com.qc.wework.msg.dto.MsgRoomContent;
+import com.qc.wework.msg.dto.MsgRoomUser;
 import com.qc.wework.msg.service.MsgService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/qc/wework/msg")
@@ -30,51 +33,24 @@ public class MsgController {
     }
 
     /**
-     * 重新同步消息
+     * 获取聊天室的内容
+     *
      * @return
      */
-//    @PostMapping("/sync")
-//    public R syncMsg() throws MsgException {
-//        msgService.triggerSyncChatData();
-//        return R.suc();
-//    }
+    @GetMapping("/room/{roomId}/content")
+    public R getContentOfRoom(@PathVariable String roomId, @Valid  PaginationRequest paginationParams) {
+        PaginationResponse<MsgRoomContent> list = msgService.listContentOfRoom(roomId, paginationParams.getCurrent(), paginationParams.getPageSize());
+        return R.suc(list);
+    }
 
-//    /**
-//     * 重新同步消息
-//     * @return
-//     */
-//    @PostMapping("/parse")
-//    public R parseMsg() {
-//        try {
-//            chatDataService.parseChatData();
-//        } catch (FinanceException e) {
-//            logger.warn("cann't parse chatdata", e);
-//            R.fail("2002", e.getMessage());
-//        }
-//        return R.suc();
-//    }
-//
-//    /**
-//     * 重新同步消息
-//     * @return
-//     */
-//    @PostMapping("/parse/media")
-//    public R parseMedia() {
-//        try {
-//            chatDataService.parseMediaData();
-//        } catch (FinanceException e) {
-//            logger.warn("cann't parse media", e);
-//            R.fail("2003", e.getMessage());
-//        }
-//        return R.suc();
-//    }
-//
-//    /**
-//     * 重新同步消息
-//     * @return
-//     */
-//    @GetMapping("/sync/result")
-//    public R GetSyncMsgResult() {
-//        return R.suc();
-//    }
+    /**
+     * 获取聊天室的成员
+     *
+     * @return
+     */
+    @GetMapping("/room/{roomId}/members")
+    public R getMemberListOfRoom(@PathVariable String roomId) {
+        Collection<MsgRoomUser> list = msgService.getMemberListOfRoom(roomId);
+        return R.suc(list);
+    }
 }
