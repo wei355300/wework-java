@@ -44,6 +44,17 @@ public class MsgController {
     }
 
     /**
+     * 获取聊天记录的原始内容
+     *
+     * @return json 格式的字符串
+     */
+    @GetMapping("/detail/{historyId}")
+    public R getPrimitiveContentOfHistoryMsg(@PathVariable Integer historyId) {
+        String msgDetail = msgService.getPrimitiveContentByHistoryId(historyId);
+        return R.suc(msgDetail);
+    }
+
+    /**
      * 获取聊天室的成员
      *
      * @return

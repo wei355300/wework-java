@@ -68,4 +68,8 @@
         where p.`roomid`=#{roomId}
         order by p.msgtime desc
     </select>
+
+    <select id="getPrimitiveContentByHistoryId" resultType="java.lang.String" >
+        select content from chat_data_parsed where history_id=#{historyId}
+    </select>
 </mapper>

@@ -7,12 +7,9 @@ import com.qc.wework.chatdata.service.ChatDataService;
 import com.qc.wework.msg.dto.MsgRoom;
 import com.qc.wework.msg.dto.MsgRoomContent;
 import com.qc.wework.msg.dto.MsgRoomUser;
-import com.qc.wework.msg.exception.FinanceException;
-import com.qc.wework.msg.exception.MsgException;
 import com.qc.wework.msg.mapper.MsgMapper;
 import com.qc.wework.msg.service.MsgService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +17,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
+@Slf4j
 public class MsgServiceImpl implements MsgService {
-
-    private static final Logger logger = LoggerFactory.getLogger(MsgServiceImpl.class);
 
     @Autowired
     private MsgMapper msgMapper;
@@ -41,9 +37,6 @@ public class MsgServiceImpl implements MsgService {
     @Override
     public PaginationResponse<MsgRoomContent> listContentOfRoom(String roomId, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        //fixme
-        // 从 chat_data_parsed 原始数据中, 获取分页记录,
-        // 再解析 原始数据, 并根据原始数据
         List<MsgRoomContent> list = msgMapper.listContentOfRoom(roomId);
         PageInfo page = new PageInfo(list);
         return PaginationResponse.toPagination(page);
@@ -54,44 +47,8 @@ public class MsgServiceImpl implements MsgService {
         return msgMapper.listMembersOfRoom(roomId);
     }
 
-//    @Override
-//    public void triggerSyncChatData() throws MsgException {
-//        try {
-//            chatDataService.triggerSyncChatData();
-//        } catch (FinanceException e) {
-//            logger.warn("触发同步消息失败!", e);
-//            throw new MsgException();
-//        }
-//    }
-
-//    private ChatDataService chatDataService;
-//
-//    public MsgServiceImpl(@Autowired ChatDataService chatDataService) {
-//        this.chatDataService = chatDataService;
-//    }
-//
-//    @Override
-//    public void syncMsg() throws FinanceException {
-//        if (ChatDataServiceImpl.isFetcher()) {
-//            throw new FinanceException("拉取任务仍在执行, 请稍等!");
-//        }
-//        chatDataService.fetchDataFromWeWork();
-//
-//    }
-//
-//    @Override
-//    public void parseMsg() throws FinanceException {
-//        if (ChatDataServiceImpl.isFetcher()) {
-//            throw new FinanceException("拉取任务仍在执行, 请稍等!");
-//        }
-//        chatDataService.parseChatData();
-//    }
-//
-//    @Override
-//    public void parseMedia() throws FinanceException {
-//        if (ChatDataServiceImpl.isFetcher()) {
-//            throw new FinanceException("拉取任务仍在执行, 请稍等!");
-//        }
-//        chatDataService.parseMediaData();
-//    }
+    @Override
+    public String getPrimitiveContentByHistoryId(Integer historyId) {
+        return msgMapper.getPrimitiveContentByHistoryId(historyId);
+    }
 }

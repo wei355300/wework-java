@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @SpringBootTest
@@ -36,7 +37,7 @@ public class ChatDataParserTest {
 
     @Test
     public void testParseChatDataContent() {
-        int historyId = 14983;
+        int historyId = 13857;
 //        String msgId = "4921223135490890266_1617849306_external";
         ChatDataParsed chatDataParsed = chatDataMapper.getChatDataParsedByHistoryId(historyId);
 
@@ -45,7 +46,7 @@ public class ChatDataParserTest {
         List r = Lists.newArrayList(ret);
 
 //        chatDataMapper.insertChatDataParsed(r);
-        chatDataMapper.insertChatDataRoomUser(r);
+//        chatDataMapper.insertChatDataRoomUser(r);
 
 //        assertThat(ret.getMsgid(), equalTo(msgId));
     }
@@ -53,21 +54,11 @@ public class ChatDataParserTest {
     @Test
     public void testParseChatDataRoomUser() {
         parseChatRoomUser();
-//        int historyId = getHistoryIdFromLastedParsedRoomUser();
-//        System.out.println("historyId:"+historyId);
-//        loopSaveRoomUser(historyId, 30);
+    }
 
-//        loop(10, 0);
-//        {
-//            int historyId = 13799;
-//            ChatDataParsed chatDataParsed = chatDataMapper.getChatDataParsedByHistoryId(historyId);
-//
-//            ChatDataParsed ret = Parser.getInstance().toChatDataParsed(historyId, chatDataParsed.getMsgid(), chatDataParsed.getContent());
-//
-//            List<ChatDataParsed> r = Lists.newArrayList(ret);
-//            List<ChatDataParsed> roomShipList = r.stream().filter(c -> !ChatDataMsg.Action.SWITCH.equals(c.getAction())).collect(Collectors.toList());
-//            chatDataMapper.insertChatDataRoomUser(roomShipList);
-//        }
+    @Test
+    public void testParseChatDataSender() {
+        updateChatDataSender();
     }
 
     @Transactional
@@ -76,10 +67,52 @@ public class ChatDataParserTest {
         loopSaveRoomUser();
     }
 
+    static int preId = 0;
+
+    @Transactional
+    @Rollback(false)
+    public void updateChatDataSender() {
+        loopUpdateSender();
+    }
+
+    private void loopUpdateSender() {
+        time++;
+        int historyId = getHistoryIdFromLastedParsedSender();
+        if (preId == historyId) {
+            throw new IllegalArgumentException("id 错误, 需要清理!");
+        }
+        preId = historyId;
+        int limit = 300;
+        System.out.println("---");
+        System.out.println("historyId:"+historyId);
+        System.out.println("---");
+        List<ChatDataParsed> list = chatDataMapper.getParsedChatDataItem(historyId, limit);
+        updateSenderColumn(list);
+
+        if (limit == list.size()) {
+            updateChatDataSender();
+        }
+    }
+
+    private void updateSenderColumn(List<ChatDataParsed> listOri) {
+        List<ChatDataParsed> r = Lists.newArrayList();
+        listOri.forEach(c -> {
+            ChatDataParsed ret = Parser.getInstance().toChatDataParsed(c.getHistory_id(), c.getMsgid(), c.getContent());
+            ret.setId(c.getId());
+            if (Objects.isNull(ret.getFrom())) {
+                throw new NullPointerException("from null 了, 检查下");
+            }
+            r.add(ret);
+
+        });
+        List<ChatDataParsed> roomShipList = r.stream().filter(c -> !ChatDataMsg.Action.SWITCH.equals(c.getAction())).collect(Collectors.toList());
+        chatDataMapper.insertChatDataSender(roomShipList);
+    }
+
     private void loopSaveRoomUser() {
         time++;
         int historyId = getHistoryIdFromLastedParsedRoomUser();
-        int limit = 30;
+        int limit = 300;
         System.out.println("historyId:"+historyId);
         List<ChatDataParsed> list = chatDataMapper.getParsedChatDataItem(historyId, limit);
         saveRoomUser(list);
@@ -89,15 +122,11 @@ public class ChatDataParserTest {
         }
     }
 
-    private void saveRoomUser(List<ChatDataParsed> list) {
+    private void saveRoomUser(List<ChatDataParsed> listOri) {
         List<ChatDataParsed> r = Lists.newArrayList();
-        list.forEach(c -> {
+        listOri.forEach(c -> {
             ChatDataParsed ret = Parser.getInstance().toChatDataParsed(c.getHistory_id(), c.getMsgid(), c.getContent());
-
             r.add(ret);
-
-            System.out.println("roomid:..." + ret.getRoomid() + "...");
-
         });
         List<ChatDataParsed> roomShipList = r.stream().filter(c -> !ChatDataMsg.Action.SWITCH.equals(c.getAction())).collect(Collectors.toList());
         chatDataMapper.insertChatDataRoomUser(roomShipList);
@@ -105,6 +134,10 @@ public class ChatDataParserTest {
 
     private int getHistoryIdFromLastedParsedRoomUser() {
         return chatDataMapper.getHistoryIdOFLastedParsedRoomUser();
+    }
+
+    private int getHistoryIdFromLastedParsedSender() {
+        return chatDataMapper.getHistoryIdOFLastedParsedSender();
     }
 
 

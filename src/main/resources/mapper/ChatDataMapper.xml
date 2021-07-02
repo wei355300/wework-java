@@ -56,6 +56,15 @@
         where history_id = #{historyId}
     </update>
 
+    <insert id="insertChatDataSender">
+        insert into chat_data_parsed (id, history_id, sender)
+        values
+        <foreach collection="chatDataParsedList" item="item" separator=",">
+            (#{item.id}, #{item.history_id}, #{item.from})
+        </foreach>
+        on duplicate key update sender=values(sender)
+    </insert>
+
     <select id="getLatestSeq" resultType="java.lang.Integer">
         select
          seq
@@ -132,5 +141,13 @@
         limit 1
     </select>
 
+    <select id="getHistoryIdOFLastedParsedSender" resultType="java.lang.Integer">
+        select
+        history_id
+        from chat_data_parsed
+        where sender is not null and action != 'switch'
+        order by history_id desc
+        limit 1
+    </select>
 
 </mapper>

@@ -16,5 +16,7 @@ public interface MsgService {
 
     Collection<MsgRoomUser> getMemberListOfRoom(String roomId);
 
+    String getPrimitiveContentByHistoryId(Integer historyId);
+
 //    void triggerSyncChatData() throws MsgException;
 }

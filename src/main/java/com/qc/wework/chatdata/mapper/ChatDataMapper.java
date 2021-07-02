@@ -34,6 +34,8 @@ public interface ChatDataMapper {
 
     void insertChatDataParsed(@Param("chatDataParsedList") List<ChatDataParsed> chatDataParseds);
 
+    void insertChatDataSender(@Param("chatDataParsedList") List<ChatDataParsed> chatDataParseds);
+
     int updateChatDataMedia(@Param("historyId") int historyId, @Param("mediaUrl") String mediaUrl);
 
 //    void insertChatDataRoomShip(@Param("chatDataParsedList") List<ChatDataParsed> chatDataParseds);
@@ -41,4 +43,6 @@ public interface ChatDataMapper {
     void insertChatDataRoomUser(@Param("chatDataParsedList") List<ChatDataParsed> chatDataParseds);
 
     int getHistoryIdOFLastedParsedRoomUser();
+
+    int getHistoryIdOFLastedParsedSender();
 }

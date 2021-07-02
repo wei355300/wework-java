@@ -20,11 +20,6 @@ public class FileQcOss extends QcOSS {
         private String accessSecret;
     }
 
-//    public OSS(OSSConfig config ) {
-//        //todo 从数据库中读取oss的配置
-//        // oss = ?
-//    }
-
     public static QcOSS get() {
         if (Objects.isNull(oss)) {
             throw new NullPointerException();
