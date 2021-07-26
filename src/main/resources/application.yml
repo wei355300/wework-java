@@ -3,8 +3,11 @@ server:
   port: 8082
 
 spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  time-zone: GMT+8
   datasource:
-    url: jdbc:mysql://rdsby7jiru36zyv6o.mysql.rds.aliyuncs.com:3306/wework?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://food-dev.mysql.polardb.rds.aliyuncs.com:3306/wework?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     password: Wework123456
     username: wework
     driver-class-name=: com.mysql.cj.jdbc.Driver

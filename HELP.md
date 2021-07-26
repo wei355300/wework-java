@@ -19,6 +19,10 @@ https://blog.csdn.net/u011056339/article/details/105704995
 http://www.588zj.com/article/qywxDev
 
 
+```bash
+mvn clean package -Dmaven.test.skip=true 
+```
+
 # 上传jar文件到测试机器 并 启动
 ```bash
 # scp target/chatdata-0.0.1-SNAPSHOT.jar ecs-proxy-sandbox@47.111.16.230:/home/ecs-proxy-sandbox/
@@ -44,10 +48,6 @@ oss-cn-shanghai-internal.aliyuncs.com
 
 ```
 
-
-```bash
-mvn clean package -Dmaven.test.skip=true 
-```
 
 
 # 测试地址
