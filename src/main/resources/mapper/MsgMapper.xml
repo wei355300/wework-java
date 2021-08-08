@@ -37,7 +37,7 @@
         left join u_contact u on r.`room_user`=u.`uid`
         left join chat_data_parsed p on p.history_id=r.history_id
         group by r.room_id
-        order by r.id desc , u.uname asc
+        order by p.id desc , u.uname asc
     </select>
 
     <select id="listMembersOfRoom" resultMap="MsgRoomUser">

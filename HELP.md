@@ -1,4 +1,9 @@
 
+# 在 idea 中配置启动参数
+```
+在程序参数中设置: --spring.profiles.active=dev
+```
+
 # 设置java.library.path的值（Mac/Linux/Windows）
 https://www.cnblogs.com/easonjim/p/9445282.html
 ```
