@@ -1,6 +1,7 @@
 
 # 在 idea 中配置启动参数
 ```
+本地测试:
 在程序参数中设置: --spring.profiles.active=dev
 ```
 
