@@ -7,6 +7,7 @@
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
         <result property="lastMsg" column="last_msg" jdbcType="VARCHAR"/>
+        <result property="msgType" column="msgtype" jdbcType="VARCHAR"/>
     </resultMap>
 
     <resultMap id="MsgRoomUser" type="com.qc.wework.msg.dto.MsgRoomUser">

@@ -12,4 +12,5 @@ public class MsgRoom {
     private String avatar;
     private Date lastTime;
     private String lastMsg;
+    private String msgType;
 }
