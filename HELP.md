@@ -1,4 +1,12 @@
 
+# 重要数据配置保护
+```
+配置文件: src/main/resources/secure.yml
+中用于设置需要保护的数据, 比如: 数据的(地址, 账号, 密码 等),
+具体用法可查看 src/main/resources/secure.yml.tpl 的注释
+```
+
+
 # 在 idea 中配置启动参数
 ```
 本地测试:

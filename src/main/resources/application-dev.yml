@@ -6,12 +6,6 @@ server:
 #  profiles:
 #    active: dev
 
-#datasource:
-#  url: jdbc:mysql://food-dev.mysql.polardb.rds.aliyuncs.com:3306/wework?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-#  password: Wework123456
-#  username: wework
-
-
 spring:
   config:
     import: "secure.yml"
