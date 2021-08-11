@@ -3,13 +3,15 @@ server:
   port: 8082
 
 spring:
+  config:
+    import: "secure.yml"
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   datasource:
-    url: jdbc:mysql://food-dev.mysql.polardb.rds.aliyuncs.com:3306/wework?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    password: Wework123456
-    username: wework
+    url: ${datasource.url}
+    password: ${datasource.password}
+    username: ${datasource.username}
     driver-class-name=: com.mysql.cj.jdbc.Driver
     druid:
       initial-size: 3
