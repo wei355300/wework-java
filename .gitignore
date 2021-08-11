@@ -1,7 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-src/main/resources/secure.yml
-
 # dependencies
 **/node_modules
 # roadhog-api-doc ignore
@@ -82,3 +80,4 @@ logs/
 
 mvnw
 mvnw.cmd
+!/src/main/resources/secure.yml
