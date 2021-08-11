@@ -1,6 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-secure.yml
+src/main/resources/secure.yml
 
 # dependencies
 **/node_modules
