@@ -80,4 +80,4 @@ logs/
 
 mvnw
 mvnw.cmd
-!/src/main/resources/secure.yml
+/src/main/resources/secure.yml
