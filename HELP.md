@@ -23,8 +23,6 @@ java -Djava.library.path=/root/lib -jar target/chatdata-0.0.1-SNAPSHOT.jar
 
 ```
 
-~~Secret: HDIZ5R_BRPyqtGbYFUj0Lv_VbwVhrYSKxqD8Bms5KhY~~ 
-
 
 # 企业微信会话存档解密示例
 https://blog.csdn.net/u011056339/article/details/105704995
@@ -39,29 +37,12 @@ mvn clean package -Dmaven.test.skip=true
 
 # 上传jar文件到测试机器 并 启动
 ```bash
-# scp target/chatdata-0.0.1-SNAPSHOT.jar ecs-proxy-sandbox@47.111.16.230:/home/ecs-proxy-sandbox/
-scp target/chatdata-0.0.1-SNAPSHOT.jar root@101.37.90.197:/root/chat-data/
-
 # ./cmd.sh restart
 ./cmd.sh stop
 ./cmd.sh status
 ./cmd.sh start  
 
 ```
-
-# OSS地址
-```bash
-外网访问  
-oss-cn-shanghai.aliyuncs.com
-
-ECS 的经典网络访问（内网）  
-oss-cn-shanghai-internal.aliyuncs.com
-
-ECS 的 VPC 网络访问（内网）  
-oss-cn-shanghai-internal.aliyuncs.com
-
-```
-
 
 
 # 测试地址

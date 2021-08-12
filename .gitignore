@@ -81,3 +81,4 @@ logs/
 mvnw
 mvnw.cmd
 /src/main/resources/secure.yml
+/no-up.md
