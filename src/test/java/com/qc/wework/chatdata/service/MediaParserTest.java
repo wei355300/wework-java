@@ -4,16 +4,18 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.qc.msg.exception.FinanceException;
+import com.qc.wework.msg.exception.FinanceException;
 import com.qc.wework.chatdata.dto.ChatDataParsed;
 import com.qc.wework.chatdata.entity.ImageEntity;
 import com.qc.wework.chatdata.mapper.ChatDataMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 
+@ActiveProfiles("dev")
 @SpringBootTest
 public class MediaParserTest {
 

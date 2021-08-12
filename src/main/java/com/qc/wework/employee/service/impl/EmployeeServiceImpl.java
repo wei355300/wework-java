@@ -6,6 +6,7 @@ import com.qc.base.PaginationResponse;
 import com.qc.wework.employee.dto.Department;
 import com.qc.wework.employee.dto.Employee;
 import com.qc.wework.employee.dto.EmployeeDetail;
+import com.qc.wework.employee.exception.EmployeeSyncException;
 import com.qc.wework.employee.mapper.EmployeeMapper;
 import com.qc.wework.employee.service.EmployeeService;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -25,8 +26,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeSyncService employeeSyncService;
 
     @Override
-    public void syncEmployees() throws WxErrorException {
-        employeeSyncService.syncEmployees();
+    public void triggerSyncChatData() throws EmployeeSyncException {
+        try {
+            employeeSyncService.syncEmployees();
+        } catch (WxErrorException e) {
+            throw new EmployeeSyncException();
+        }
     }
 
     @Override

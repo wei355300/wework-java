@@ -2,6 +2,7 @@ package com.qc.config;
 
 import com.qc.config.dto.Config;
 import com.qc.config.mapper.ConfigMapper;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class ConfigService {
 
     private static Logger logger = LoggerFactory.getLogger(ConfigService.class);
 
+//    @Getter
     @Autowired
     private InitConfigProperties initConfigProperties;
 
@@ -27,16 +29,12 @@ public class ConfigService {
 
     private Map<String, String> configMap = new HashMap<>();
 
-    private Boolean enableChatData;
-
     @PostConstruct
     public void initServices() {
         logger.info("init ConfigService to loading module configs");
         List<String> initModules = initConfigProperties.getModules();
         Collection<Config> configs = configMapper.queryByModules(initModules);
         toModuleConfigs(configs);
-
-        enableChatData = initConfigProperties.getChatdata();
     }
 
     private void toModuleConfigs(Collection<Config> configs) {
@@ -61,6 +59,14 @@ public class ConfigService {
     }
 
     public boolean isEnableChatData() {
-        return enableChatData;
+        return initConfigProperties.getChatdata();
+    }
+
+    public boolean isEnableEmployeeSync() {
+        return initConfigProperties.getEmployee();
+    }
+
+    public boolean isEnableExternalContactSync() {
+        return initConfigProperties.getExternalContact();
     }
 }

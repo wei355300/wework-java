@@ -2,20 +2,20 @@
 server:
   port: 8082
 
-#spring:
-#  profiles:
-#    active: dev
-
-
 spring:
+  config:
+    import: "secure.yml"
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
   datasource:
-    url: jdbc:mysql://rdsby7jiru36zyv6o.mysql.rds.aliyuncs.com:3306/wework?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    password: Wework123456
-    username: wework
+    url: ${datasource.url}
+    password: ${datasource.password}
+    username: ${datasource.username}
     driver-class-name=: com.mysql.cj.jdbc.Driver
     druid:
       initial-size: 3
-      max-active: 20
+      max-active: 50
       min-idle: 2
       filter:
         slf4j:
@@ -34,21 +34,9 @@ init:
     modules:
       - oss_media
       - wechat_cp_app
-    chatdata: false
-
-#wechat:
-#  cp:
-#    corpId: wwb81640d935ddafe4
-#    appConfigs:
-#      - name: chatdata
-#        agentId: 101
-#        secret: HDIZ5R_BRPyqtGbYFUj0Lromom_U-WoRZGZxVcIPmo0
-#        token:
-#        aesKey:
-#      - name: employee
-#        agentId: 102
-#        secret: uCI9rKmb3aAmCfp2KtiD7vjHj_COXQh2QPxyUJRiJQc
-
+    chatdata: true
+    employee: true
+    external_contact: true
 
 mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml

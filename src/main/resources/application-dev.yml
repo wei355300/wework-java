@@ -1,0 +1,79 @@
+
+server:
+  port: 8082
+
+#spring:
+#  profiles:
+#    active: dev
+
+spring:
+  config:
+    import: "secure.yml"
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  datasource:
+    url: ${datasource.url}
+    password: ${datasource.password}
+    username: ${datasource.username}
+    driver-class-name=: com.mysql.cj.jdbc.Driver
+    druid:
+      initial-size: 3
+      max-active: 20
+      min-idle: 2
+      filter:
+        slf4j:
+          enabled: true
+          statement-create-after-log-enabled: false
+          statement-log-enabled: false
+          statement-executable-sql-log-enable: true
+          statement-log-error-enabled: true
+          result-set-log-enabled: false
+  devtools:
+    restart:
+      enabled: true
+
+init:
+  config:
+    modules:
+      - oss_media
+      - wechat_cp_app
+    chatdata: false
+    employee: false
+    external_contact: false
+
+
+#wechat:
+#  cp:
+#    corpId: wwb81640d935ddafe4
+#    appConfigs:
+#      - name: chatdata
+#        agentId: 101
+#        secret: HDIZ5R_BRPyqtGbYFUj0Lromom_U-WoRZGZxVcIPmo0
+#        token:
+#        aesKey:
+#      - name: employee
+#        agentId: 102
+#        secret: uCI9rKmb3aAmCfp2KtiD7vjHj_COXQh2QPxyUJRiJQc
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+
+logging:
+  level:
+    org.springframework.web: INFO
+    com.wework.chatdata: DEBUG
+    com.qc: DEBUG
+    com.github.binarywang.demo.wx.cp: INFO
+    me.chanjar.weixin: INFO
+    druid:
+      sql:
+        Statement: DEBUG
+

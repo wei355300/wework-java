@@ -16,7 +16,6 @@ npm-debug.log*
 yarn-error.log
 
 /coverage
-.idea
 yarn.lock
 package-lock.json
 *bak
@@ -81,3 +80,4 @@ logs/
 
 mvnw
 mvnw.cmd
+/src/main/resources/secure.yml

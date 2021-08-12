@@ -1,7 +1,7 @@
 package com.qc.wework.chatdata.service.impl;
 
 
-import com.qc.msg.exception.FinanceException;
+import com.qc.wework.msg.exception.FinanceException;
 import com.qc.utils.JsonUtils;
 import com.qc.wework.chatdata.dto.ChatData;
 import com.qc.wework.chatdata.mapper.ChatDataMapper;
@@ -12,22 +12,22 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-class ChatDataSyncer extends AbstractChatDataParser {
+class ChatDataSyncer extends AbstractChatDataSync {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatDataSyncer.class);
 
     private ChatDataMapper chatDataMapper;
 
-    private ChatDataSyncer(WxCpService wxCpService) {
-        super(wxCpService);
+    private ChatDataSyncer(String corpId, String corpSecret) {
+        super(corpId, corpSecret);
     }
 
     ChatDataSyncer(WxCpService wxCpService, ChatDataMapper chatDataMapper) {
-        this(wxCpService);
+        this(wxCpService.getWxCpConfigStorage().getCorpId(), wxCpService.getWxCpConfigStorage().getCorpSecret());
         this.chatDataMapper = chatDataMapper;
     }
 
-    void parse() throws FinanceException {
+    void sync() throws FinanceException {
         fetchChatData();
     }
 

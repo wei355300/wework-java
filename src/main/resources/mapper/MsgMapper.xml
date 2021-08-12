@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.wework.msg.mapper.MsgMapper">
+
+    <resultMap type="com.qc.wework.msg.dto.MsgRoom" id="MsgRoomMap">
+        <result property="roomId" column="room_id" jdbcType="VARCHAR" />
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="lastTime" column="last_time" jdbcType="TIMESTAMP"/>
+        <result property="lastMsg" column="last_msg" jdbcType="VARCHAR"/>
+        <result property="msgType" column="msgtype" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="MsgRoomUser" type="com.qc.wework.msg.dto.MsgRoomUser">
+        <result property="id" column="member_id" jdbcType="VARCHAR" />
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="position" column="position" jdbcType="VARCHAR"/>
+        <result property="thumbAvatar" column="thumb_avatar" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="MsgRoomContent" type="com.qc.wework.msg.dto.MsgRoomContent">
+        <result property="id" column="history_id" jdbcType="VARCHAR" />
+        <result property="msgTime" column="msgtime" jdbcType="TIMESTAMP"/>
+        <result property="content" column="msg" jdbcType="VARCHAR"/>
+        <result property="msgType" column="msgtype" jdbcType="VARCHAR"/>
+        <association property="sender" resultMap="MsgRoomUser" columnPrefix="u_" notNullColumn="member_id">
+        </association>
+    </resultMap>
+
+    <select id="listRooms" resultMap="MsgRoomMap">
+        select
+        r.room_id                                           as 'room_id',
+        substr(group_concat(DISTINCT u.uname), 1, 100)      as 'name',
+        p.msgtime                                           as 'last_time',
+        p.msg                                               as 'last_msg',
+        p.msgtype                                           as 'msgtype'
+        from chat_data_room_user r
+        left join u_contact u on r.`room_user`=u.`uid`
+        left join chat_data_parsed p on p.history_id=r.history_id
+        group by r.room_id
+        order by p.id desc , u.uname asc
+    </select>
+
+    <select id="listMembersOfRoom" resultMap="MsgRoomUser">
+        select
+            u.room_user       as 'member_id',
+            uc.uname          as 'name',
+            uc.uposition      as 'position',
+            uc.thumb_avatar   as 'thumb_avatar',
+            uc.utype          as 'type'
+        from chat_data_room_user u
+        left join u_contact uc on u.room_user=uc.`uid`
+        where u.room_id=#{roomId}
+    </select>
+
+    <select id="listContentOfRoom" resultMap="MsgRoomContent">
+        select
+        p.history_id,
+        p.msgtime,
+        p.msg,
+        p.msgtype,
+        uc.uid           as 'u_member_id',
+        uc.uname         as 'u_name',
+        uc.uposition     as 'u_position',
+        uc.thumb_avatar  as 'u_thumb_avatar',
+        uc.utype         as 'u_type'
+        from chat_data_parsed p
+        left join u_contact uc on uc.uid=p.sender
+        where p.`roomid`=#{roomId}
+        order by p.msgtime desc
+    </select>
+
+    <select id="getPrimitiveContentByHistoryId" resultType="java.lang.String" >
+        select content from chat_data_parsed where history_id=#{historyId}
+    </select>
+</mapper>

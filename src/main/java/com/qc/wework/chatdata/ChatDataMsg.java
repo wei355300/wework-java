@@ -1,6 +1,6 @@
-package com.qc.wework.chatdata.fetcher;
+package com.qc.wework.chatdata;
 
-public interface Msg {
+public interface ChatDataMsg {
 
     interface Type {
         String TEXT = "text";//文本
@@ -41,5 +41,11 @@ public interface Msg {
         String MSGTIME = "msgtime";
         String MSGTYPE = "msgtype";
         String CONTENT = "content";
+    }
+
+    interface Action {
+        String SEND = "send";
+        String SWITCH = "switch";
+        String RECALL = "recall";
     }
 }

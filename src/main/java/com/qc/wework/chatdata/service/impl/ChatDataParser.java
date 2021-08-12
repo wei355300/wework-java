@@ -1,7 +1,8 @@
 package com.qc.wework.chatdata.service.impl;
 
 
-import com.qc.msg.exception.FinanceException;
+import com.qc.wework.msg.exception.FinanceException;
+import com.qc.wework.chatdata.ChatDataMsg;
 import com.qc.wework.chatdata.mapper.ChatDataMapper;
 import com.tencent.wework.Finance;
 import com.qc.wework.chatdata.dto.ChatDataItem;
@@ -15,19 +16,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 class ChatDataParser extends AbstractChatDataParser {
 
     private static final Logger logger = LoggerFactory.getLogger(ChatDataParser.class);
 
+    private static final int PRE_PARSE_LIMIT_NUM = 10;
+
     private ChatDataMapper chatDataMapper;
 
-    private ChatDataParser(WxCpService wxCpService) {
-        super(wxCpService);
+    private ChatDataParser(String corpId, String corpSecret) {
+        super(corpId, corpSecret);
     }
 
     ChatDataParser(WxCpService wxCpService, ChatDataMapper chatDataMapper) {
-        this(wxCpService);
+        this(wxCpService.getWxCpConfigStorage().getCorpId(), wxCpService.getWxCpConfigStorage().getCorpSecret());
         this.chatDataMapper = chatDataMapper;
     }
 
@@ -64,16 +68,16 @@ class ChatDataParser extends AbstractChatDataParser {
 
     private void parseChatData(long sdk) {
         //从chat_data_content取得最后一个history_id
-        int historyId = getLatestUnParseId();
+        int historyId = getLatestParsedId();
         logger.info("latest parsed msg id: {}", historyId);
-        List<ChatDataItem> chatDataItems = getUnParseChatData(historyId, 10);
+        List<ChatDataItem> chatDataItems = getUnParseChatData(historyId, PRE_PARSE_LIMIT_NUM);
         if (CollectionUtils.isEmpty(chatDataItems)) {
             logger.debug("chat data items was empty");
             return;
         }
         parseAndSaveChatDataItems(sdk, chatDataItems);
         // 递归解析
-        if (chatDataItems.size() == 10) {
+        if (chatDataItems.size() == PRE_PARSE_LIMIT_NUM) {
             logger.debug("has more un parse chat data msg, continue...");
             parseChatData(sdk);
         }
@@ -94,7 +98,7 @@ class ChatDataParser extends AbstractChatDataParser {
                 String resultContent = Finance.GetContentFromSlice(slice);
                 logger.debug("解析结果: {}", resultContent);
 
-                ChatDataParsed chatDataParsed = Parser.toChatDataParsed(item.getId(), item.getMsgid(), resultContent);
+                ChatDataParsed chatDataParsed = Parser.getInstance().toChatDataParsed(item.getId(), item.getMsgid(), resultContent);
 
                 chatDataContents.add(chatDataParsed);
 
@@ -106,9 +110,16 @@ class ChatDataParser extends AbstractChatDataParser {
         saveChatDataItemContent(chatDataContents);
     }
 
-    private void saveChatDataItemContent(List<ChatDataParsed> chatDataParseds) {
+    private void saveChatDataItemContent(List<ChatDataParsed> chatDataParsedList) {
         logger.debug("保存解析结果");
-        chatDataMapper.insertChatDataParsed(chatDataParseds);
+        if (chatDataParsedList.isEmpty()) {
+            return;
+        }
+        chatDataMapper.insertChatDataParsed(chatDataParsedList);
+
+        //将 action = switch 的消息排除, 该消息没有roomid
+        List<ChatDataParsed> roomShipList = chatDataParsedList.stream().filter(c -> !ChatDataMsg.Action.SWITCH.equals(c.getAction())).collect(Collectors.toList());
+        chatDataMapper.insertChatDataRoomUser(roomShipList);
     }
 
     private List<ChatDataItem> getUnParseChatData(int historyId, int limit) {
@@ -120,7 +131,7 @@ class ChatDataParser extends AbstractChatDataParser {
      * 获取最后一个被解析的会话记录的ID
      * @return
      */
-    private int getLatestUnParseId() {
+    private int getLatestParsedId() {
         Integer latestHistoryId = chatDataMapper.getLatestParsedIdOfChatData();
         logger.debug("get latest history id is {}", latestHistoryId);
         //如果content中没有数据, 默认从history表开始解析

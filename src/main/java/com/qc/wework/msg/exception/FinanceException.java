@@ -1,4 +1,4 @@
-package com.qc.msg.exception;
+package com.qc.wework.msg.exception;
 
 import lombok.Getter;
 

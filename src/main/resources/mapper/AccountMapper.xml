@@ -10,8 +10,12 @@
         <result property="token" column="token" jdbcType="VARCHAR"/>
         <result property="authority" column="authority" jdbcType="VARCHAR"/>
         <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
-        <result property="thumbAvatar" column="thumb-avatar" jdbcType="VARCHAR"/>
+        <result property="thumbAvatar" column="thumb_avatar" jdbcType="VARCHAR"/>
     </resultMap>
+    <insert id="openAccount">
+        insert into account (`employee_id`, `password`, `authority`)
+        select id, #{pass}, #{authority} from employee where mobile=#{mobile} limit 1
+    </insert>
 
     <update id="updateTokenByAccount">
         update account set token=#{token}
@@ -20,9 +24,22 @@
 
     <update id="updateTokenByToken">
         update account set token=#{newToken}
-        where token=#{newToken}
+        where token=#{oldToken}
     </update>
-
+    <update id="updateTokenByMobile">
+        update account a, employee e
+        set a.token=#{token}
+        where e.id=a.employee_id and e.mobile=#{mobile}
+    </update>
+    <update id="updatePasswordByMobile">
+        update account a, employee e
+        set a.password=#{newPass}
+        where e.id=a.employee_id and e.mobile=#{mobile}
+    </update>
+    <delete id="delAccount">
+        delete a.* from account a, employee e
+        where e.id=a.employee_id and e.mobile=#{mobile}
+    </delete>
 
 
     <select id="getByMobile" resultMap="AccountMap">

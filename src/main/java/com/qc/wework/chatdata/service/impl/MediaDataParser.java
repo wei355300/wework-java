@@ -7,7 +7,7 @@ import com.google.gson.JsonParser;
 import com.qc.ali.oss.AppendUploader;
 import com.qc.ali.oss.Uploader;
 import com.qc.ali.oss.UploaderStrategy;
-import com.qc.msg.exception.FinanceException;
+import com.qc.wework.msg.exception.FinanceException;
 import com.qc.wework.chatdata.dto.ChatDataParsed;
 import com.qc.wework.chatdata.entity.FileEntity;
 import com.qc.wework.chatdata.entity.ImageEntity;
@@ -52,7 +52,7 @@ class MediaDataParser extends AbstractChatDataParser {
     private static Map<String, UploadExec> uploadExecs = new HashMap<>();
 
     private MediaDataParser(WxCpService wxCpService) {
-        super(wxCpService);
+        super(wxCpService.getWxCpConfigStorage().getCorpId(), wxCpService.getWxCpConfigStorage().getCorpSecret());
     }
 
     MediaDataParser(WxCpService wxCpService, UploaderStrategy uploaderStrategy, ChatDataMapper chatDataMapper) {
