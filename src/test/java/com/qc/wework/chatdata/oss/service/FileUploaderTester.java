@@ -1,18 +1,6 @@
 package com.qc.wework.chatdata.oss.service;
 
-import com.qc.ali.oss.FileUploader;
-import com.qc.ali.oss.OssConfig;
-import com.qc.ali.oss.OssStrategy;
-import com.qc.config.ConfigService;
-import com.qc.utils.JsonUtils;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.io.IOException;
-
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class FileUploaderTester {

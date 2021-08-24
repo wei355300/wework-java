@@ -73,4 +73,14 @@
     <select id="getPrimitiveContentByHistoryId" resultType="java.lang.String" >
         select content from chat_data_parsed where history_id=#{historyId}
     </select>
+
+    <select id="getMsgByHistoryId" resultMap="MsgRoomContent">
+        select
+            p.history_id,
+            p.msgtime,
+            p.msg,
+            p.msgtype
+        from chat_data_parsed p
+        where p.`history_id`=#{historyId}
+    </select>
 </mapper>

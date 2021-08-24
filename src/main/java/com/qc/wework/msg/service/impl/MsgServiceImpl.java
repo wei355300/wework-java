@@ -2,6 +2,8 @@ package com.qc.wework.msg.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.qc.ali.codec.CodecFailureException;
+import com.qc.ali.codec.VoiceTransCodec;
 import com.qc.base.PaginationResponse;
 import com.qc.wework.chatdata.service.ChatDataService;
 import com.qc.wework.msg.dto.MsgRoom;
@@ -25,6 +27,9 @@ public class MsgServiceImpl implements MsgService {
 
     @Autowired
     private ChatDataService chatDataService;
+
+    @Autowired
+    private VoiceTransCodec voiceTransCodec;
 
     @Override
     public PaginationResponse<MsgRoom> listRooms(int pageNum, int pageSize) {
@@ -50,5 +55,12 @@ public class MsgServiceImpl implements MsgService {
     @Override
     public String getPrimitiveContentByHistoryId(Integer historyId) {
         return msgMapper.getPrimitiveContentByHistoryId(historyId);
+    }
+
+    @Override
+    public String transVoiceFormat(int msgId) throws CodecFailureException {
+        MsgRoomContent msg = msgMapper.getMsgByHistoryId(msgId);
+        String voiceUrl = msg.getContent();
+        return voiceTransCodec.transCodec(voiceUrl, VoiceTransCodec.Content_Type_MP3);
     }
 }

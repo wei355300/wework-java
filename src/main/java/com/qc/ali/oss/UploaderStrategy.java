@@ -1,5 +1,6 @@
 package com.qc.ali.oss;
 
+import com.qc.ali.OssConfig;
 import com.qc.config.ConfigService;
 import com.qc.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;

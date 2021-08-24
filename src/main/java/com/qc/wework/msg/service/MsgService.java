@@ -1,5 +1,6 @@
 package com.qc.wework.msg.service;
 
+import com.qc.ali.codec.CodecFailureException;
 import com.qc.base.PaginationResponse;
 import com.qc.wework.msg.dto.MsgRoom;
 import com.qc.wework.msg.dto.MsgRoomContent;
@@ -17,6 +18,8 @@ public interface MsgService {
     Collection<MsgRoomUser> getMemberListOfRoom(String roomId);
 
     String getPrimitiveContentByHistoryId(Integer historyId);
+
+    String transVoiceFormat(int msgId) throws CodecFailureException;
 
 //    void triggerSyncChatData() throws MsgException;
 }

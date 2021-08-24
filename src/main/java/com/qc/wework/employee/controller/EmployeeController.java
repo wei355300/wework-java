@@ -39,16 +39,4 @@ public class EmployeeController {
         return R.suc();
     }
 
-//    @GetMapping("/token")
-//    public R<String> getToken() {
-//        WxCpService wxCpService = wxCpConfiguration.getCpService(WxCpConfiguration.WxCpAppAgent.Employee);
-//        String accessToken = null;
-//        try {
-//            accessToken = wxCpService.getAccessToken();
-//        } catch (WxErrorException e) {
-//            e.printStackTrace();
-//        }
-//        return R.suc(accessToken);
-//    }
-
 }
