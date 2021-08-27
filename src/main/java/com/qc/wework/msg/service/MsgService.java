@@ -1,12 +1,12 @@
 package com.qc.wework.msg.service;
 
-import com.qc.ali.codec.CodecFailureException;
+import com.qc.ali.codec.TransferFailureException;
 import com.qc.base.PaginationResponse;
 import com.qc.wework.msg.dto.MsgRoom;
 import com.qc.wework.msg.dto.MsgRoomContent;
 import com.qc.wework.msg.dto.MsgRoomUser;
-import com.qc.wework.msg.exception.MsgException;
 
+import java.net.MalformedURLException;
 import java.util.Collection;
 
 public interface MsgService {
@@ -19,7 +19,7 @@ public interface MsgService {
 
     String getPrimitiveContentByHistoryId(Integer historyId);
 
-    String transVoiceFormat(int msgId) throws CodecFailureException;
+    String transVoiceFormat(int msgId) throws TransferFailureException;
 
-//    void triggerSyncChatData() throws MsgException;
+    String getVoicePlayAddress(int msgId, boolean transfer) throws TransferFailureException;
 }

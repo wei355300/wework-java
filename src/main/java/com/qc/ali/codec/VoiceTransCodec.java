@@ -47,20 +47,42 @@ public class VoiceTransCodec {
     }
 
     /**
+     * 判断是否已经转码
+     * 从 oss 的 bucket 上查找是否存在 mp3的文件
+     *
+     * @param mediaUrl : 原 oss 上的播放地址
+     */
+    public boolean isTrans(String mediaUrl) throws MalformedURLException {
+        String filePath = getFilePath(mediaUrl);
+        return isTransferred(filePath);
+    }
+
+    /**
+     * 直播将后缀修改为.mp3
+     *
+     * (转码功能仅是将 amr 转为 mp3格式, 固直接修改地址的后缀)
+     *
+     * @param mediaUrl
+     */
+    public String getPlayAddress(String mediaUrl) {
+        return replaceFileNameSuffix(mediaUrl, "mp3");
+    }
+
+    /**
      * 返回转码后的地址
      * @param mediaUrl
      * @param contentType
      * @return
      */
-    public String transCodec(String mediaUrl, String contentType) throws CodecFailureException, MalformedURLException {
+    public String transCodec(String mediaUrl, String contentType) throws TransferFailureException, MalformedURLException {
         if(!Content_Type_MP3.equals(contentType))
             throw new IllegalArgumentException("UnSupport Content Type: "+ contentType);
 
         //提取文件名称
         String ossInputOssFilePath = getFilePath(mediaUrl);
 
-        if (isTransfered(ossInputOssFilePath)) {
-            throw new CodecFailureException("already transfered");
+        if (isTransferred(ossInputOssFilePath)) {
+            throw new TransferFailureException("already transfered");
         }
 
         JsonObject input = makeAudioInput(ossInputOssFilePath);
@@ -72,10 +94,6 @@ public class VoiceTransCodec {
         submitJob(request);
 
         return replaceFileNameSuffix(mediaUrl, "mp3");
-    }
-
-    private void queryJobRet() {
-//        acsClient.
     }
 
     private boolean submitJob(SubmitJobsRequest request) {
@@ -175,7 +193,7 @@ public class VoiceTransCodec {
     /**
      * 从 oss 的 bucket 中判断是否已经转码
      */
-    private boolean isTransfered(String mediaPath) {
+    private boolean isTransferred(String mediaPath) {
         String ossObject = replaceFileNameSuffix(mediaPath, "mp3");
         return ossClient.doesObjectExist(mediaTransferConfig.getBucket_name(), ossObject);
     }

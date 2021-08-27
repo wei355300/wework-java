@@ -2,7 +2,7 @@ package com.qc.wework.msg.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.qc.ali.codec.CodecFailureException;
+import com.qc.ali.codec.TransferFailureException;
 import com.qc.ali.codec.VoiceTransCodec;
 import com.qc.base.PaginationResponse;
 import com.qc.wework.chatdata.service.ChatDataService;
@@ -61,15 +61,38 @@ public class MsgServiceImpl implements MsgService {
     }
 
     @Override
-    public String transVoiceFormat(int msgId) throws CodecFailureException {
+    public String transVoiceFormat(int msgId) throws TransferFailureException {
         MsgRoomContent msg = msgMapper.getMsgByHistoryId(msgId);
         String voiceUrl = msg.getContent();
+        return transVoiceFormat(voiceUrl);
+    }
+
+    @Override
+    public String getVoicePlayAddress(int msgId, boolean transfer) throws TransferFailureException {
+        MsgRoomContent msg = msgMapper.getMsgByHistoryId(msgId);
+        String voiceUrl = msg.getContent();
+        boolean isTrans = false;
+        try {
+            isTrans = voiceTransCodec.isTrans(voiceUrl);
+        } catch (MalformedURLException e) {
+            log.warn("", e);
+            throw new TransferFailureException("");
+        }
+        if (isTrans) {
+            return voiceTransCodec.getPlayAddress(voiceUrl);
+        }
+        return transVoiceFormat(voiceUrl);
+    }
+
+    private String transVoiceFormat(String voiceUrl) throws TransferFailureException {
         try {
             return voiceTransCodec.transCodec(voiceUrl, VoiceTransCodec.Content_Type_MP3);
+        } catch (TransferFailureException e) {
+            log.warn("", e);
+            throw e;
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-            log.warn("媒体资源地址错误, 请检查: "+voiceUrl);
+            log.warn("", e);
         }
-        return "";
+        throw new TransferFailureException("");
     }
 }

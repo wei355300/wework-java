@@ -2,12 +2,12 @@ package com.qc.ali.codec;
 
 import lombok.Getter;
 
-public class CodecFailureException extends Exception {
+public class TransferFailureException extends Exception {
 
     @Getter
     private String msg;
 
-    public CodecFailureException(String error) {
+    public TransferFailureException(String error) {
         msg = error;
     }
 }

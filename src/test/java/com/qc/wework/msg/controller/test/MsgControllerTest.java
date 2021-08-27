@@ -76,4 +76,17 @@ public class MsgControllerTest {
 
         System.out.println(actions.andReturn().getResponse().getContentAsString());
     }
+
+    @Test
+    public void testGetVoicePlayAddress() throws Exception {
+
+        ResultActions actions = mockMvc.perform(get("/api/qc/wework/msg/media/voice/mp3")
+                        .header("token", token)
+                        .param("msgId", "348413")
+                        .param("trans", "0")
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+
+        System.out.println(actions.andReturn().getResponse().getContentAsString());
+    }
 }
