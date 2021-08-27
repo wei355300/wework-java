@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,14 +23,16 @@ import java.util.List;
 @Slf4j
 public class MsgServiceImpl implements MsgService {
 
-    @Autowired
     private MsgMapper msgMapper;
-
-    @Autowired
     private ChatDataService chatDataService;
+    private VoiceTransCodec voiceTransCodec;
 
     @Autowired
-    private VoiceTransCodec voiceTransCodec;
+    public MsgServiceImpl(MsgMapper msgMapper, ChatDataService chatDataService, VoiceTransCodec voiceTransCodec) {
+        this.msgMapper = msgMapper;
+        this.chatDataService = chatDataService;
+        this.voiceTransCodec = voiceTransCodec;
+    }
 
     @Override
     public PaginationResponse<MsgRoom> listRooms(int pageNum, int pageSize) {
@@ -61,6 +64,12 @@ public class MsgServiceImpl implements MsgService {
     public String transVoiceFormat(int msgId) throws CodecFailureException {
         MsgRoomContent msg = msgMapper.getMsgByHistoryId(msgId);
         String voiceUrl = msg.getContent();
-        return voiceTransCodec.transCodec(voiceUrl, VoiceTransCodec.Content_Type_MP3);
+        try {
+            return voiceTransCodec.transCodec(voiceUrl, VoiceTransCodec.Content_Type_MP3);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            log.warn("媒体资源地址错误, 请检查: "+voiceUrl);
+        }
+        return "";
     }
 }

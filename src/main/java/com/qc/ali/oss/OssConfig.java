@@ -1,4 +1,4 @@
-package com.qc.ali;
+package com.qc.ali.oss;
 
 import com.qc.config.ConfigService;
 import com.qc.utils.JsonUtils;

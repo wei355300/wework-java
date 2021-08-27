@@ -53,19 +53,23 @@
         where u.room_id=#{roomId}
     </select>
 
-    <select id="listContentOfRoom" resultMap="MsgRoomContent">
+    <sql id="selectMsgContent">
         select
-        p.history_id,
-        p.msgtime,
-        p.msg,
-        p.msgtype,
-        uc.uid           as 'u_member_id',
-        uc.uname         as 'u_name',
-        uc.uposition     as 'u_position',
-        uc.thumb_avatar  as 'u_thumb_avatar',
-        uc.utype         as 'u_type'
+            p.history_id,
+            p.msgtime,
+            p.msg,
+            p.msgtype,
+            uc.uid           as 'u_member_id',
+                uc.uname         as 'u_name',
+                uc.uposition     as 'u_position',
+                uc.thumb_avatar  as 'u_thumb_avatar',
+                uc.utype         as 'u_type'
         from chat_data_parsed p
         left join u_contact uc on uc.uid=p.sender
+    </sql>
+
+    <select id="listContentOfRoom" resultMap="MsgRoomContent">
+        <include refid="selectMsgContent" />
         where p.`roomid`=#{roomId}
         order by p.msgtime desc
     </select>
@@ -75,12 +79,7 @@
     </select>
 
     <select id="getMsgByHistoryId" resultMap="MsgRoomContent">
-        select
-            p.history_id,
-            p.msgtime,
-            p.msg,
-            p.msgtype
-        from chat_data_parsed p
+        <include refid="selectMsgContent" />
         where p.`history_id`=#{historyId}
     </select>
 </mapper>

@@ -2,7 +2,6 @@ package com.qc.ali.oss;
 
 import com.aliyun.oss.model.AppendObjectRequest;
 import com.aliyun.oss.model.AppendObjectResult;
-import com.qc.ali.OssConfig;
 
 import java.io.ByteArrayInputStream;
 import java.util.Objects;
@@ -25,7 +24,7 @@ public class AppendUploader extends Uploader {
     public Uploader upload(byte[] content) {
         //首次追加
         if (Objects.isNull(appendObjectRequest) || Objects.isNull(appendObjectResult)) {
-            appendObjectRequest = new AppendObjectRequest(getBucketName(), getResName(), new ByteArrayInputStream(content), getMeta());
+            appendObjectRequest = new AppendObjectRequest(getOssConfig().getBucket_name(), getResName(), new ByteArrayInputStream(content), getMeta());
             appendObjectRequest.setPosition(0L);
             appendObjectResult = getOssClient().appendObject(appendObjectRequest);
         }

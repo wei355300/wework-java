@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("dev")
@@ -20,7 +21,7 @@ public class MsgControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final String token = "";
+    private static final String token = "9a82c91d-6192-4005-b21f-4fdac733d58b";
     private static final String current = "0";
     private static final String pageSize = "10";
 
@@ -59,6 +60,18 @@ public class MsgControllerTest {
         ResultActions actions = mockMvc.perform(get("/api/qc/wework/msg/room/"+roomId+"/members")
                 .header("token", token)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+
+        System.out.println(actions.andReturn().getResponse().getContentAsString());
+    }
+
+    @Test
+    public void testTransferVoiceAmr() throws Exception {
+
+        ResultActions actions = mockMvc.perform(put("/api/qc/wework/msg/media/voice/mp3")
+                        .header("token", token)
+                        .param("msgId", "348413")
+                        .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
 
         System.out.println(actions.andReturn().getResponse().getContentAsString());
