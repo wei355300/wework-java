@@ -1,9 +1,30 @@
+# ************************************************************
+# Sequel Pro SQL dump
+# Version 5446
+#
+# https://www.sequelpro.com/
+# https://github.com/sequelpro/sequelpro
+#
+# Database: wework
+# Generation Time: 2021-08-12 08:30:51 +0000
+# ************************************************************
 
--- DROP DATABASE IF EXISTS `wework`;
--- CREATE DATABASE IF NOT EXISTS `wework`;
-USE `wework`;
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+SET NAMES utf8mb4;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+# Dump of table account
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `account`;
+
 CREATE TABLE `account` (
   `id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `employee_id` int(11) NOT NULL,
@@ -14,39 +35,34 @@ CREATE TABLE `account` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_employee_id` (`employee_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `chat_data_content`;
-CREATE TABLE `chat_data_content` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `history_id` int(11) NOT NULL,
-  `msgid` varchar(100) NOT NULL COMMENT '消息id，消息的唯一标识，企业可以使用此字段进行消息去重。String类型',
-  `action` varchar(20) DEFAULT NULL COMMENT '消息动作，目前有send(发送消息)/recall(撤回消息)/switch(切换企业日志)三种类型。String类型',
-  `from` varchar(100) DEFAULT NULL COMMENT '消息发送方id。同一企业内容为userid，非相同企业为external_userid。消息如果是机器人发出，也为external_userid。String类型',
-  `tolist` varchar(1000) DEFAULT NULL COMMENT '消息接收方列表，可能是多个，同一个企业内容为userid，非相同企业为external_userid。数组，内容为string类型',
-  `roomid` varchar(100) DEFAULT NULL COMMENT '群聊消息的群id。如果是单聊则为空。String类型',
-  `msgtime` datetime DEFAULT NULL COMMENT '消息发送时间戳，utc时间，ms单位。',
-  `msgtype` varchar(50) DEFAULT NULL COMMENT '文本消息为：text。String类型',
-  `content` longtext COMMENT '消息内容。String类型',
-  PRIMARY KEY (`id`),
-  KEY `index_cd_c_msgid` (`msgid`),
-  KEY `index_cd_c_hid` (`history_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-DROP TABLE IF EXISTS `chat_data_content_tolist`;
-CREATE TABLE `chat_data_content_tolist` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `msgid` varchar(100) DEFAULT NULL,
-  `from` varchar(100) DEFAULT NULL,
-  `to` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `index_cd_c_t_msgid` (`msgid`),
-  KEY `index_cd_c_t_f` (`from`),
-  KEY `index_cd_c_t_t` (`to`)
+
+# Dump of table chat_data_contact_ship
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `chat_data_contact_ship`;
+
+CREATE TABLE `chat_data_contact_ship` (
+  `history_id` int(11) DEFAULT NULL,
+  `msgid` varchar(100) NOT NULL DEFAULT '',
+  `user_id` varchar(50) DEFAULT NULL,
+  `action` varchar(10) DEFAULT NULL COMMENT '1: sender(发送者); 2: receiver(消息接收者)',
+  `user_type` tinyint(4) DEFAULT NULL COMMENT '1: 公司员工; 2: 客户',
+  `user_name` varchar(50) DEFAULT NULL,
+  `user_avatar` text,
+  `user_position` varchar(50) DEFAULT NULL,
+  `user_gender` tinyint(11) DEFAULT NULL COMMENT '性别 0-未知 1-男性 2-女性'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table chat_data_history
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `chat_data_history`;
+
 CREATE TABLE `chat_data_history` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `seq` int(11) DEFAULT NULL,
@@ -57,31 +73,82 @@ CREATE TABLE `chat_data_history` (
   `creation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `index_seq` (`seq`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COMMENT='从企业微信拉取回的原始数据';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='从企业微信拉取回的原始数据';
+
+
+
+# Dump of table chat_data_parsed
+# ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `chat_data_parsed`;
+
 CREATE TABLE `chat_data_parsed` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `history_id` int(11) unsigned NOT NULL,
   `msgid` varchar(100) DEFAULT NULL,
   `action` varchar(100) DEFAULT '',
   `msgtype` varchar(100) DEFAULT NULL,
+  `roomid` varchar(100) DEFAULT NULL,
+  `msgtime` datetime DEFAULT NULL,
+  `msg` text,
+  `media_url` text,
+  `extra_media` tinyint(4) NOT NULL DEFAULT '0',
   `content` longtext,
-  KEY `index_cd_p_hid` (`history_id`)
+  `sender` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_cd_p_hid` (`history_id`),
+  KEY `index_c_d_p_roomid` (`roomid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='从原始内容(chat_data_ori)解析出来的数据';
 
-DROP TABLE IF EXISTS `chat_data_parsed_media`;
-CREATE TABLE `chat_data_parsed_media` (
-  `parse_id` int(11) DEFAULT NULL,
-  `msgid` varchar(100) DEFAULT NULL,
-  `msgtype` varchar(100) DEFAULT NULL,
-  `media_path` text,
-  KEY `index_cd_pm_pid` (`parse_id`)
+
+
+# Dump of table chat_data_room
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `chat_data_room`;
+
+CREATE TABLE `chat_data_room` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `history_id` int(11) DEFAULT NULL,
+  `from` varchar(64) DEFAULT '',
+  `to` varchar(64) DEFAULT '',
+  `roomid` varchar(64) DEFAULT NULL,
+  `room_name` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_c_d_h_id` (`history_id`),
+  KEY `index_c_d_r_roomid` (`roomid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+
+# Dump of table chat_data_room_user
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `chat_data_room_user`;
+
+CREATE TABLE `chat_data_room_user` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `history_id` int(11) DEFAULT NULL,
+  `room_user` varchar(64) DEFAULT '',
+  `room_id` varchar(64) DEFAULT NULL,
+  `room_name` varchar(100) DEFAULT NULL,
+  `remark` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index_c_d_r_u_n` (`room_user`,`room_id`),
+  KEY `index_c_d_h_id` (`history_id`),
+  KEY `index_c_d_r_roomid` (`room_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table config
+# ------------------------------------------------------------
+
 DROP TABLE IF EXISTS `config`;
+
 CREATE TABLE `config` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `module` varchar(100) NOT NULL DEFAULT '',
   `code` varchar(100) NOT NULL DEFAULT '',
   `value` text NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '0',
@@ -91,7 +158,33 @@ CREATE TABLE `config` (
   KEY `index_c_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+
+# Dump of table contact_external
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `contact_external`;
+
+CREATE TABLE `contact_external` (
+  `external_userid` varchar(50) NOT NULL DEFAULT '' COMMENT '外部联系人的userid',
+  `name` varchar(100) DEFAULT NULL,
+  `avatar` text,
+  `type` tinyint(4) DEFAULT NULL COMMENT '外部联系人的类型，1表示该外部联系人是微信用户，2表示该外部联系人是企业微信用户',
+  `gender` tinyint(4) DEFAULT NULL COMMENT '外部联系人性别 0-未知 1-男性 2-女性',
+  `position` varchar(50) DEFAULT NULL COMMENT '外部联系人的职位，如果外部企业或用户选择隐藏职位，则不返回，仅当联系人类型是企业微信用户时有此字段',
+  `corp_name` varchar(50) DEFAULT NULL COMMENT '外部联系人所在企业的简称，仅当联系人类型是企业微信用户时有此字段',
+  `corp_full_name` varchar(100) DEFAULT NULL COMMENT '外部联系人所在企业的主体名称，仅当联系人类型是企业微信用户时有此字段',
+  `context` longtext,
+  UNIQUE KEY `idx_contact_external_euid` (`external_userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table employee
+# ------------------------------------------------------------
+
 DROP TABLE IF EXISTS `employee`;
+
 CREATE TABLE `employee` (
   `id` int(9) unsigned NOT NULL AUTO_INCREMENT,
   `userid` varchar(100) NOT NULL,
@@ -106,4 +199,45 @@ CREATE TABLE `employee` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cp_userid` (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table u_contact
+# ------------------------------------------------------------
+
+DROP VIEW IF EXISTS `u_contact`;
+
+CREATE TABLE `u_contact` (
+   `uid` VARCHAR(100) NOT NULL DEFAULT '',
+   `uname` VARCHAR(100) NULL DEFAULT NULL,
+   `uposition` VARCHAR(50) NULL DEFAULT NULL,
+   `thumb_avatar` TEXT NULL DEFAULT NULL,
+   `avatar` TEXT NULL DEFAULT NULL,
+   `utype` BIGINT(20) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM;
+
+
+
+
+
+# Replace placeholder table for u_contact with correct view syntax
+# ------------------------------------------------------------
+
+DROP TABLE `u_contact`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`temp_account`@`%` SQL SECURITY INVOKER VIEW `u_contact`
+AS SELECT
+   `employee`.`userid` AS `uid`,
+   `employee`.`name` AS `uname`,
+   `employee`.`position` AS `uposition`,
+   `employee`.`thumb_avatar` AS `thumb_avatar`,
+   `employee`.`avatar` AS `avatar`,1 AS `utype`
+FROM `employee` union select `contact_external`.`external_userid` AS `uid`,`contact_external`.`name` AS `uname`,`contact_external`.`position` AS `uposition`,`contact_external`.`avatar` AS `thumb_avatar`,`contact_external`.`avatar` AS `avatar`,2 AS `utype` from `contact_external`;
+
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
