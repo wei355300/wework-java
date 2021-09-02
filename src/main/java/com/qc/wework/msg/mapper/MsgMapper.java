@@ -19,4 +19,6 @@ public interface MsgMapper {
     List<MsgRoomContent> listContentOfRoom(@Param("roomId") String roomId);
 
     String getPrimitiveContentByHistoryId(@Param("historyId") Integer historyId);
+
+    MsgRoomContent getMsgByHistoryId(@Param("historyId") Integer historyId);
 }

@@ -20,7 +20,6 @@ public class ConfigService {
 
     private static Logger logger = LoggerFactory.getLogger(ConfigService.class);
 
-//    @Getter
     @Autowired
     private InitConfigProperties initConfigProperties;
 

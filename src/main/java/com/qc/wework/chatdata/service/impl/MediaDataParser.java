@@ -189,7 +189,6 @@ abstract class UploadExec {
                 ret = Finance.GetMediaData(sdk, indexbuf, uploadData.getSdkfileid(), AbstractChatDataParser.PROXY, AbstractChatDataParser.PASWD, AbstractChatDataParser.TIMEOUT, media_data);
                 //拉取失败
                 if (ret != 0) {
-                    //System.out.println("getmediadata ret:" + ret);
                     Finance.FreeMediaData(media_data);
                     throw new FinanceException((int)ret, "拉取文件失败");
                 }

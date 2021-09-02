@@ -1,5 +1,6 @@
 package com.qc.security;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -61,6 +62,11 @@ public class ApiRequestAuthenticationProvider implements AuthenticationProvider,
 
         ApiRequestAuthenticationToken apiRequestAuthentication = (ApiRequestAuthenticationToken) authentication2;
         String token = determineToken(apiRequestAuthentication);
+        if (StringUtils.isEmpty(token)) {
+            throw new BadCredentialsException(this.messages
+                    .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+        }
+
         boolean cacheWasUsed = true;
         UserDetails user = this.userCache.getUserFromCache(token);
         if (user == null) {
