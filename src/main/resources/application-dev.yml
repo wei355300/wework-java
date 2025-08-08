@@ -49,12 +49,12 @@ init:
 #    appConfigs:
 #      - name: chatdata
 #        agentId: 101
-#        secret: HDIZ5R_BRPyqtGbYFUj0Lromom_U-WoRZGZxVcIPmo0
+#        secret: HDIZ5R_BRPyqtGbYFUj0Lromom_U-
 #        token:
 #        aesKey:
 #      - name: employee
 #        agentId: 102
-#        secret: uCI9rKmb3aAmCfp2KtiD7vjHj_COXQh2QPxyUJRiJQc
+#        secret: uCI9rKmb3aAmCfp2KtiD7v
 
 
 mybatis:
